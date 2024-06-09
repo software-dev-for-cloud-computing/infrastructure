@@ -8,7 +8,7 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup20242"
+  name     = "myResourceGroup20243"
   location = "Germany West Central"
 }
 
@@ -27,18 +27,17 @@ resource "azurerm_linux_web_app" "react_app" {
   service_plan_id     = azurerm_service_plan.app_service_plan.id
 
   site_config {
-    app_command_line = ""
     always_on        = true
 
     application_stack {
-        docker_image_name = "docker/getting-started:latest"
+        docker_image_name = "staticfloat/react-and-webpack:latest"
         docker_registry_url = "https://index.docker.io"
     }
   }
 
   app_settings = {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
-    PORT                                = "3000" 
+    PORT                                = "8080" 
   }
 
 
