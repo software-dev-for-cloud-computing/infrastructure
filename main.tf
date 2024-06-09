@@ -39,13 +39,13 @@ resource "azurerm_linux_web_app" "react_app" {
 
   app_settings = {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
-    PORT                                = "8080" 
-    LOGGING_LEVEL                       = "verbose"
+    PORT                                = "8080"
+    LOGGING_LEVEL                       = "Verbose"
   }
 
   logs {
     application_logs {
-      file_system_level = "verbose"
+      file_system_level = "Verbose"  # Richtiges Format
     }
     http_logs {
       file_system {
@@ -54,13 +54,12 @@ resource "azurerm_linux_web_app" "react_app" {
       }
     }
   }
-
-
 }
 
 output "react_app_url" {
   value = azurerm_linux_web_app.react_app.default_hostname
 }
+
 
 /*resource "azurerm_app_service" "fastapi_app" {
   name                = "fastapi-app-service"
