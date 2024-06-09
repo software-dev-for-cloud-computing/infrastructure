@@ -8,7 +8,7 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup2024"
+  name     = "myResourceGroup20242"
   location = "Germany West Central"
 }
 
