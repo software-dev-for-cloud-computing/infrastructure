@@ -8,7 +8,7 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup20243"
+  name     = "myResourceGroup20244"
   location = "Germany West Central"
 }
 
@@ -33,11 +33,26 @@ resource "azurerm_linux_web_app" "react_app" {
         docker_image_name = "staticfloat/react-and-webpack:latest"
         docker_registry_url = "https://index.docker.io"
     }
+
+    health_check_path = "/" 
   }
 
   app_settings = {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
     PORT                                = "8080" 
+    LOGGING_LEVEL                       = "verbose"
+  }
+
+  logs {
+    application_logs {
+      file_system_level = "verbose"
+    }
+    http_logs {
+      file_system {
+        retention_in_days = 7
+        retention_in_mb   = 35
+      }
+    }
   }
 
 
