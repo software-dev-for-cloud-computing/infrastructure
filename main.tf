@@ -8,7 +8,7 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroupHdmHdm"
+  name     = "myResourceGroup"
   location = "Germany West Central"
 }
 
@@ -27,14 +27,21 @@ resource "azurerm_linux_web_app" "react_app" {
   service_plan_id     = azurerm_service_plan.app_service_plan.id
 
   site_config {
-    app_command_line = "npm start"
+    app_command_line = ""
     always_on        = false
+
+    application_stack {
+        docker_image_name = "docker/getting-started:latest"
+        docker_registry_url = "https://index.docker.io"
+    }
   }
 
   app_settings = {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
-    DOCKER_CUSTOM_IMAGE_NAME            = "docker.io/jasonraimondi/react-demo:latest"
+    PORT                                = "3000" 
   }
+
+
 }
 
 output "react_app_url" {
