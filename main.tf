@@ -8,7 +8,7 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup20245"
+  name     = "myResourceGroup20246"
   location = "Germany West Central"
 }
 
@@ -39,7 +39,7 @@ resource "azurerm_linux_web_app" "react_app" {
 
   app_settings = {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
-    PORT                                = "8080"
+    PORT                                = "80"
     LOGGING_LEVEL                       = "Verbose"
   }
 
