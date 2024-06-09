@@ -8,7 +8,7 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup20244"
+  name     = "myResourceGroup20245"
   location = "Germany West Central"
 }
 
@@ -30,7 +30,7 @@ resource "azurerm_linux_web_app" "react_app" {
     always_on        = true
 
     application_stack {
-        docker_image_name = "staticfloat/react-and-webpack:latest"
+        docker_image_name = "okteto/react-getting-started:dev"
         docker_registry_url = "https://index.docker.io"
     }
 
