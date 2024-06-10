@@ -20,8 +20,8 @@ resource "azurerm_service_plan" "app_service_plan" {
   sku_name            = "B1"
 }
 
-resource "azurerm_linux_web_app" "react_app" {
-  name                = "react-app-${random_pet.name.id}"
+resource "azurerm_linux_web_app" "nextjs_app" {
+  name                = "nextjs-app-${random_pet.name.id}"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   service_plan_id     = azurerm_service_plan.app_service_plan.id
@@ -30,11 +30,13 @@ resource "azurerm_linux_web_app" "react_app" {
     always_on        = true
 
     application_stack {
-        docker_image_name = "okteto/react-getting-started:dev"
+        docker_image_name = "timburkei/burkei:latest"
         docker_registry_url = "https://index.docker.io"
+        docker_registry_password = var.registry_access_token
+        docker_registry_username = var.registry_username
     }
 
-    health_check_path = "/" 
+    health_check_path = "/"
   }
 
   app_settings = {
@@ -45,7 +47,7 @@ resource "azurerm_linux_web_app" "react_app" {
 
   logs {
     application_logs {
-      file_system_level = "Verbose"  # Richtiges Format
+      file_system_level = "Verbose"
     }
     http_logs {
       file_system {
@@ -56,9 +58,10 @@ resource "azurerm_linux_web_app" "react_app" {
   }
 }
 
-output "react_app_url" {
-  value = azurerm_linux_web_app.react_app.default_hostname
+output "nextjs_app_url" {
+  value = azurerm_linux_web_app.nextjs_app.default_hostname
 }
+
 
 
 /*resource "azurerm_app_service" "fastapi_app" {

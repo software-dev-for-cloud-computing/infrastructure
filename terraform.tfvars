@@ -1,2 +1,2 @@
 registry_username = "your_registry_username"
-registry_password = "your_registry_password"
+registry_access_token = "your_registry_access_token"
