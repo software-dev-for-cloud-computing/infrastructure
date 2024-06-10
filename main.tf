@@ -8,7 +8,7 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup20248"
+  name     = "myResourceGroup20249"
   location = "Germany West Central"
 }
 
@@ -30,10 +30,10 @@ resource "azurerm_linux_web_app" "nextjs_app" {
     always_on        = true
 
     application_stack {
-        docker_image_name = "timburkei/burkei:latest"
-        docker_registry_url = "https://index.docker.io"
-        docker_registry_password = var.registry_access_token
-        docker_registry_username = var.registry_username
+      docker_image_name = "timburkei/burkei:latest"
+      docker_registry_url = "https://index.docker.io"
+      docker_registry_password = var.registry_access_token
+      docker_registry_username = var.registry_username
     }
 
     health_check_path = "/"
@@ -58,9 +58,48 @@ resource "azurerm_linux_web_app" "nextjs_app" {
   }
 }
 
+resource "azurerm_linux_web_app" "mongodb_app" {
+  name                = "mongodb-app-${random_pet.name.id}"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  service_plan_id     = azurerm_service_plan.app_service_plan.id
+
+  site_config {
+    always_on        = true
+
+    application_stack {
+      docker_image_name = "mongo:latest"
+      docker_registry_url = "https://index.docker.io"
+    }
+  }
+
+  app_settings = {
+    WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
+    MONGO_INITDB_ROOT_USERNAME          = var.mongo_username
+    MONGO_INITDB_ROOT_PASSWORD          = var.mongo_password
+  }
+
+  logs {
+    application_logs {
+      file_system_level = "Verbose"
+    }
+    http_logs {
+      file_system {
+        retention_in_days = 7
+        retention_in_mb   = 35
+      }
+    }
+  }
+}
+
 output "nextjs_app_url" {
   value = azurerm_linux_web_app.nextjs_app.default_hostname
 }
+
+output "mongodb_app_url" {
+  value = azurerm_linux_web_app.mongodb_app.default_hostname
+}
+
 
 
 

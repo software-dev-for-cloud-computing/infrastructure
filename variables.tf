@@ -5,3 +5,11 @@ variable "registry_username" {
 variable "registry_access_token" {
   type = string
 }
+
+variable "mongo_username" {
+  type = string
+}
+
+variable "mongo_password" {
+  type = string
+}
