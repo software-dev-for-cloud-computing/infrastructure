@@ -85,6 +85,12 @@ resource "azurerm_cosmosdb_mongo_collection" "mongo_collection" {
   account_name        = azurerm_cosmosdb_account.cosmos_account.name
   database_name       = azurerm_cosmosdb_mongo_database.mongo_database.name
   shard_key           = "id"
+
+  index {
+    keys   = ["_id"]
+    unique = true
+  }
+
 }
 
 output "cosmosdb_account_endpoint" {
