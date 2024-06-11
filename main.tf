@@ -93,6 +93,7 @@ output "cosmosdb_account_endpoint" {
 
 output "cosmosdb_primary_key" {
   value = azurerm_cosmosdb_account.cosmos_account.primary_key
+  sensitive = true
 }
 
 
