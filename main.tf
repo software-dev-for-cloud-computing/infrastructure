@@ -8,7 +8,7 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup20249"
+  name     = "myResourceGroup202410"
   location = "Germany West Central"
 }
 
@@ -17,7 +17,7 @@ resource "azurerm_service_plan" "app_service_plan" {
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   os_type             = "Linux"
-  sku_name            = "B1"
+  sku_name            = "F1"
 }
 
 resource "azurerm_linux_web_app" "nextjs_app" {
@@ -27,7 +27,7 @@ resource "azurerm_linux_web_app" "nextjs_app" {
   service_plan_id     = azurerm_service_plan.app_service_plan.id
 
   site_config {
-    always_on        = true
+    always_on        = false
 
     application_stack {
       docker_image_name = "timburkei/burkei:latest"
@@ -58,48 +58,42 @@ resource "azurerm_linux_web_app" "nextjs_app" {
   }
 }
 
-resource "azurerm_linux_web_app" "mongodb_app" {
-  name                = "mongodb-app-${random_pet.name.id}"
+resource "azurerm_cosmosdb_account" "cosmos_account" {
+  name                = "cosmos-db-${random_pet.name.id}"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
-  service_plan_id     = azurerm_service_plan.app_service_plan.id
-
-  site_config {
-    always_on        = true
-
-    application_stack {
-      docker_image_name = "mongo:latest"
-      docker_registry_url = "https://index.docker.io"
-    }
+  offer_type          = "Standard"
+  kind                = "MongoDB"
+  consistency_policy {
+    consistency_level = "Session"
   }
-
-  app_settings = {
-    WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
-    MONGO_INITDB_ROOT_USERNAME          = var.mongo_username
-    MONGO_INITDB_ROOT_PASSWORD          = var.mongo_password
-  }
-
-  logs {
-    application_logs {
-      file_system_level = "Verbose"
-    }
-    http_logs {
-      file_system {
-        retention_in_days = 7
-        retention_in_mb   = 35
-      }
-    }
+  geo_location {
+    location          = azurerm_resource_group.main.location
+    failover_priority = 0
   }
 }
 
-output "nextjs_app_url" {
-  value = azurerm_linux_web_app.nextjs_app.default_hostname
+resource "azurerm_cosmosdb_mongo_database" "mongo_database" {
+  name                = "mydatabase"
+  resource_group_name = azurerm_resource_group.main.name
+  account_name        = azurerm_cosmosdb_account.cosmos_account.name
 }
 
-output "mongodb_app_url" {
-  value = azurerm_linux_web_app.mongodb_app.default_hostname
+resource "azurerm_cosmosdb_mongo_collection" "mongo_collection" {
+  name                = "mongoDbCollection"
+  resource_group_name = azurerm_resource_group.main.name
+  account_name        = azurerm_cosmosdb_account.cosmos_account.name
+  database_name       = azurerm_cosmosdb_mongo_database.mongo_database.name
+  shard_key           = "id"
 }
 
+output "cosmosdb_account_endpoint" {
+  value = azurerm_cosmosdb_account.cosmos_account.endpoint
+}
+
+output "cosmosdb_primary_key" {
+  value = azurerm_cosmosdb_account.cosmos_account.primary_master_key
+}
 
 
 
