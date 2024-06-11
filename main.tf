@@ -8,7 +8,7 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup202410"
+  name     = "myResourceGroup202411"
   location = "Germany West Central"
 }
 
@@ -92,7 +92,7 @@ output "cosmosdb_account_endpoint" {
 }
 
 output "cosmosdb_primary_key" {
-  value = azurerm_cosmosdb_account.cosmos_account.primary_master_key
+  value = azurerm_cosmosdb_account.cosmos_account.primary_key
 }
 
 
