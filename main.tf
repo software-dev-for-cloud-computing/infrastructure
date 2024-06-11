@@ -8,7 +8,7 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup202411"
+  name     = "myResourceGroup202412"
   location = "Germany West Central"
 }
 
@@ -27,11 +27,11 @@ resource "azurerm_linux_web_app" "nextjs_app" {
   service_plan_id     = azurerm_service_plan.app_service_plan.id
 
   site_config {
-    always_on        = false
+    always_on = false
 
     application_stack {
-      docker_image_name = "timburkei/burkei:latest"
-      docker_registry_url = "https://index.docker.io"
+      docker_image_name        = "timburkei/burkei:latest"
+      docker_registry_url      = "https://index.docker.io"
       docker_registry_password = var.registry_access_token
       docker_registry_username = var.registry_username
     }
@@ -92,7 +92,7 @@ output "cosmosdb_account_endpoint" {
 }
 
 output "cosmosdb_primary_key" {
-  value = azurerm_cosmosdb_account.cosmos_account.primary_key
+  value     = azurerm_cosmosdb_account.cosmos_account.primary_key
   sensitive = true
 }
 

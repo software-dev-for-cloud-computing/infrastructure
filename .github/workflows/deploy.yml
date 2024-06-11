@@ -25,6 +25,9 @@ jobs:
         run: |
           echo "registry_username = \"${{ secrets.DOCKERHUB_USERNAME }}\"" > terraform.tfvars
           echo "registry_access_token = \"${{ secrets.DOCKERHUB_ACCESS_TOKEN }}\"" >> terraform.tfvars
+
+      - name: Set MongoDB Secrets
+        run: |
           echo "mongo_username = \"${{ secrets.MONGO_USERNAME }}\"" >> terraform.tfvars
           echo "mongo_password = \"${{ secrets.MONGO_PASSWORD }}\"" >> terraform.tfvars
 
