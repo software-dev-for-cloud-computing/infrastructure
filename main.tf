@@ -8,7 +8,7 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup202417"
+  name     = "myResourceGroup202418"
   location = "Germany West Central"
 }
 
@@ -27,12 +27,9 @@ resource "azurerm_linux_web_app" "nodejs_app" {
   service_plan_id     = azurerm_service_plan.app_service_plan.id
 
   site_config {
-    always_on = false
+    linux_fx_version = "DOCKER|ghcr.io/<github-username>/<image-name>:<tag>"
 
-    application_stack {
-      docker_image_name = "ghcr.io/<github-username>/<image-name>:<tag>"
-      docker_registry_url = "https://ghcr.io"
-    }
+    always_on = false
 
     health_check_path = "/"
   }
