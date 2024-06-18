@@ -20,8 +20,8 @@ resource "azurerm_service_plan" "app_service_plan" {
   sku_name            = "F1"
 }
 
-resource "azurerm_linux_web_app" "nextjs_app" {
-  name                = "nextjs-app-${random_pet.name.id}"
+resource "azurerm_linux_web_app" "nodejs_app" {
+  name                = "nodejs-app-${random_pet.name.id}"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   service_plan_id     = azurerm_service_plan.app_service_plan.id
@@ -30,7 +30,7 @@ resource "azurerm_linux_web_app" "nextjs_app" {
     always_on = false
 
     application_stack {
-      docker_image_name        = "timburkei/burkei:latest"
+      docker_image_name        = "ghcr.io/nyctospark/node-app:latest"
       docker_registry_url      = "https://index.docker.io"
       docker_registry_password = var.registry_access_token
       docker_registry_username = var.registry_username
@@ -43,6 +43,17 @@ resource "azurerm_linux_web_app" "nextjs_app" {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
     PORT                                = "80"
     LOGGING_LEVEL                       = "Verbose"
+    DB_USER                             = var.mongo_username
+    DB_PASSWORD                         = var.mongo_password
+    DB_HOST                             = azurerm_cosmosdb_account.cosmos_account.endpoint
+    DB_PORT                             = "10255"
+    DB_NAME                             = "mydatabase"
+  }
+
+  connection_string {
+    name  = "MONGODB_URI"
+    value = "mongodb://${var.mongo_username}:${var.mongo_password}@${azurerm_cosmosdb_account.cosmos_account.endpoint}:10255/mydatabase?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@${var.mongo_username}@"
+    type  = "Custom"
   }
 
   logs {
@@ -90,7 +101,6 @@ resource "azurerm_cosmosdb_mongo_collection" "mongo_collection" {
     keys   = ["_id"]
     unique = true
   }
-
 }
 
 output "cosmosdb_account_endpoint" {
@@ -101,45 +111,3 @@ output "cosmosdb_primary_key" {
   value     = azurerm_cosmosdb_account.cosmos_account.primary_key
   sensitive = true
 }
-
-
-
-/*resource "azurerm_app_service" "fastapi_app" {
-  name                = "fastapi-app-service"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  app_service_plan_id = azurerm_app_service_plan.app_service_plan.id
-  app_settings = {
-    WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
-    DOCKER_REGISTRY_SERVER_URL          = "https://myregistry.azurecr.io"
-    DOCKER_REGISTRY_SERVER_USERNAME     = var.registry_username
-    DOCKER_REGISTRY_SERVER_PASSWORD     = var.registry_password
-  }
-  site_config {
-    app_command_line = "uvicorn main:app --host 0.0.0.0 --port 8000"
-  }
-}
-
-resource "azurerm_app_service" "nodejs_app" {
-  name                = "nodejs-app-service"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  app_service_plan_id = azurerm_app_service_plan.app_service_plan.id
-  app_settings = {
-    WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
-    DOCKER_REGISTRY_SERVER_URL          = "https://myregistry.azurecr.io"
-    DOCKER_REGISTRY_SERVER_USERNAME     = var.registry_username
-    DOCKER_REGISTRY_SERVER_PASSWORD     = var.registry_password
-  }
-  site_config {
-    app_command_line = "node index.js"
-  }
-}
-
-resource "azurerm_storage_account" "blob_storage" {
-  name                     = "mystorageaccount"
-  resource_group_name      = azurerm_resource_group.main.name
-  location                 = azurerm_resource_group.main.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-}*/
