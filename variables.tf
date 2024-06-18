@@ -1,7 +1,3 @@
-variable "registry_username" {
-  type = string
-}
-
 variable "mongo_username" {
   type = string
 }
