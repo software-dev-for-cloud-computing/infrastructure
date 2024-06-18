@@ -8,7 +8,7 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup202415"
+  name     = "myResourceGroup202416"
   location = "Germany West Central"
 }
 
@@ -30,10 +30,8 @@ resource "azurerm_linux_web_app" "nodejs_app" {
     always_on = false
 
     application_stack {
-      docker_image_name        = "ghcr.io/nyctospark/node-app:latest"
-      docker_registry_url      = "https://index.docker.io"
-      docker_registry_password = var.registry_access_token
-      docker_registry_username = var.registry_username
+      docker_image_name = "ghcr.io/nyctospark/node-app:latest"
+      docker_registry_url = "https://ghcr.io"
     }
 
     health_check_path = "/"
@@ -49,7 +47,7 @@ resource "azurerm_linux_web_app" "nodejs_app" {
     DB_PORT                             = "10255"
     DB_NAME                             = "mydatabase"
   }
-  
+
   connection_string {
     name  = "MONGODB_URI"
     value = "mongodb://${var.mongo_username}:${var.mongo_password}@${azurerm_cosmosdb_account.cosmos_account.endpoint}:10255/mydatabase?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@${var.mongo_username}@"
