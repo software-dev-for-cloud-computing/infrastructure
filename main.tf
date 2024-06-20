@@ -8,7 +8,7 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup202420"
+  name     = "myResourceGroup202421"
   location = "Germany West Central"
 }
 
@@ -43,7 +43,7 @@ resource "azurerm_linux_web_app" "nodejs_app" {
     LOGGING_LEVEL                       = "Verbose"
     DB_USER                             = var.mongo_username
     DB_PASSWORD                         = var.mongo_password
-    DB_HOST                             = azurerm_cosmosdb_account.cosmos_account.endpoint
+    DB_HOST                             = replace(azurerm_cosmosdb_account.cosmos_account.endpoint, "https://", "")
     DB_PORT                             = "10255"
     DB_NAME                             = "mydatabase"
     NODE_ENV                            = "production"
@@ -51,7 +51,7 @@ resource "azurerm_linux_web_app" "nodejs_app" {
 
   connection_string {
     name  = "MONGODB_URI"
-    value = "mongodb://${var.mongo_username}:${var.mongo_password}@${azurerm_cosmosdb_account.cosmos_account.endpoint}:10255/mydatabase?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@${var.mongo_username}@"
+    value = "mongodb://${var.mongo_username}:${var.mongo_password}@${replace(azurerm_cosmosdb_account.cosmos_account.endpoint, "https://", "")}:10255/mydatabase?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@${var.mongo_username}@"
     type  = "Custom"
   }
 
@@ -109,4 +109,12 @@ output "cosmosdb_account_endpoint" {
 output "cosmosdb_primary_key" {
   value     = azurerm_cosmosdb_account.cosmos_account.primary_key
   sensitive = true
+}
+
+variable "mongo_username" {
+  type = string
+}
+
+variable "mongo_password" {
+  type = string
 }
