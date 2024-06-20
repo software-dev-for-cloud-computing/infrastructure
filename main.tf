@@ -8,7 +8,7 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup202421"
+  name     = "myResourceGroup202422"
   location = "Germany West Central"
 }
 
@@ -109,12 +109,4 @@ output "cosmosdb_account_endpoint" {
 output "cosmosdb_primary_key" {
   value     = azurerm_cosmosdb_account.cosmos_account.primary_key
   sensitive = true
-}
-
-variable "mongo_username" {
-  type = string
-}
-
-variable "mongo_password" {
-  type = string
 }
