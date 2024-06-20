@@ -8,7 +8,7 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup202419"
+  name     = "myResourceGroup202420"
   location = "Germany West Central"
 }
 
@@ -46,6 +46,7 @@ resource "azurerm_linux_web_app" "nodejs_app" {
     DB_HOST                             = azurerm_cosmosdb_account.cosmos_account.endpoint
     DB_PORT                             = "10255"
     DB_NAME                             = "mydatabase"
+    NODE_ENV                            = "production"
   }
 
   connection_string {
