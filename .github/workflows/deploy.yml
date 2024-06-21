@@ -25,7 +25,7 @@ jobs:
         run: |
             echo "mongo_username = \"${{ secrets.MONGO_USERNAME }}\"" > terraform.tfvars
             echo "mongo_password = \"${{ secrets.MONGO_PASSWORD }}\"" >> terraform.tfvars
-        
+
       - name: Terraform Init
         run: terraform init
 
@@ -34,3 +34,4 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply tfplan
+

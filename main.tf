@@ -8,7 +8,7 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup202423"
+  name     = "myResourceGroup202424"
   location = "Germany West Central"
 }
 
@@ -56,7 +56,6 @@ resource "azurerm_linux_web_app" "nodejs_app" {
     type  = "Custom"
   }
 
-
   logs {
     application_logs {
       file_system_level = "Verbose"
@@ -68,7 +67,14 @@ resource "azurerm_linux_web_app" "nodejs_app" {
       }
     }
   }
+
+  depends_on = [
+    azurerm_cosmosdb_account.cosmos_account,
+    azurerm_cosmosdb_mongo_database.mongo_database,
+    azurerm_cosmosdb_mongo_collection.mongo_collection
+  ]
 }
+
 
 resource "azurerm_cosmosdb_account" "cosmos_account" {
   name                = "cosmos-db-${random_pet.name.id}"
