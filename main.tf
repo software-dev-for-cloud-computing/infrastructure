@@ -8,10 +8,9 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup202424"
+  name     = "myResourceGroup202426"
   location = "Germany West Central"
 }
-
 
 resource "azurerm_service_plan" "app_service_plan" {
   name                = "myAppServicePlan"
@@ -74,7 +73,6 @@ resource "azurerm_linux_web_app" "nodejs_app" {
     azurerm_cosmosdb_mongo_collection.mongo_collection
   ]
 }
-
 
 resource "azurerm_cosmosdb_account" "cosmos_account" {
   name                = "cosmos-db-${random_pet.name.id}"
