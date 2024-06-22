@@ -45,22 +45,27 @@ jobs:
         run: terraform apply -auto-approve tfplan
 
       - name: Output Terraform Outputs
-        run: terraform output -json > tf_outputs.json
-
-      - name: Display tf_outputs.json
-        run: cat tf_outputs.json
+        run: |
+          terraform output -json > tf_outputs.json
+          cat tf_outputs.json # Debugging: Ausgabe des Inhalts der tf_outputs.json
 
       - name: Parse Terraform Outputs and Set Environment Variables
         id: parse_outputs
         run: |
-          DB_USER=$(jq -r '.cosmosdb_username.value' tf_outputs.json)
-          DB_PASSWORD=$(jq -r '.cosmosdb_password.value' tf_outputs.json)
-          DB_HOST=$(jq -r '.cosmosdb_account_endpoint.value' tf_outputs.json)
-          DB_NAME=$(jq -r '.cosmosdb_database_name.value' tf_outputs.json)
-          echo "PROD_DB_USER=${DB_USER}" >> $GITHUB_ENV
-          echo "PROD_DB_PASSWORD=${DB_PASSWORD}" >> $GITHUB_ENV
-          echo "PROD_DB_HOST=${DB_HOST}" >> $GITHUB_ENV
-          echo "PROD_DB_NAME=${DB_NAME}" >> $GITHUB_ENV
+          if [ -f tf_outputs.json ]; then
+            cat tf_outputs.json # Debugging: Ausgabe des Inhalts der tf_outputs.json
+            DB_USER=$(jq -r '.cosmosdb_username.value' tf_outputs.json)
+            DB_PASSWORD=$(jq -r '.cosmosdb_password.value' tf_outputs.json)
+            DB_HOST=$(jq -r '.cosmosdb_account_endpoint.value' tf_outputs.json)
+            DB_NAME=$(jq -r '.cosmosdb_database_name.value' tf_outputs.json)
+            echo "PROD_DB_USER=${DB_USER}" >> $GITHUB_ENV
+            echo "PROD_DB_PASSWORD=${DB_PASSWORD}" >> $GITHUB_ENV
+            echo "PROD_DB_HOST=${DB_HOST}" >> $GITHUB_ENV
+            echo "PROD_DB_NAME=${DB_NAME}" >> $GITHUB_ENV
+          else
+            echo "tf_outputs.json file not found"
+            exit 1
+          fi
 
       - name: Configure App Service Environment Variables
         run: |
