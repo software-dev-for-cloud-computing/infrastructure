@@ -21,17 +21,6 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Set MongoDB Secrets
-        run: |
-          echo "prod_db_user = \"${{ secrets.PROD_DB_USER }}\"" >> terraform.tfvars
-          echo "prod_db_password = \"${{ secrets.PROD_DB_PASSWORD }}\"" >> terraform.tfvars
-          echo "prod_db_host = \"${{ secrets.PROD_DB_HOST }}\"" >> terraform.tfvars
-          echo "prod_db_port = \"${{ secrets.PROD_DB_PORT }}\"" >> terraform.tfvars
-          echo "prod_db_name = \"${{ secrets.PROD_DB_NAME }}\"" >> terraform.tfvars
-
-      - name: Display terraform.tfvars
-        run: cat terraform.tfvars
-
       - name: Terraform Init
         run: terraform init
 
@@ -40,3 +29,30 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
+
+      - name: Output Terraform Outputs
+        run: terraform output -json > tf_outputs.json
+
+      - name: Parse Terraform Outputs and Set Environment Variables
+        id: parse_outputs
+        run: |
+          DB_USER=$(jq -r '.cosmosdb_username.value' tf_outputs.json)
+          DB_PASSWORD=$(jq -r '.cosmosdb_password.value' tf_outputs.json)
+          DB_HOST=$(jq -r '.cosmosdb_account_endpoint.value' tf_outputs.json)
+          DB_NAME=$(jq -r '.cosmosdb_database_name.value' tf_outputs.json)
+          echo "PROD_DB_USER=${DB_USER}" >> $GITHUB_ENV
+          echo "PROD_DB_PASSWORD=${DB_PASSWORD}" >> $GITHUB_ENV
+          echo "PROD_DB_HOST=${DB_HOST}" >> $GITHUB_ENV
+          echo "PROD_DB_NAME=${DB_NAME}" >> $GITHUB_ENV
+
+      - name: Configure App Service Environment Variables
+        run: |
+          az webapp config appsettings set --name nodejs-app-alive-wahoo --resource-group myResourceGroup202432 --settings \
+            PROD_DB_USER=${DB_USER} \
+            PROD_DB_PASSWORD=${DB_PASSWORD} \
+            PROD_DB_HOST=${DB_HOST} \
+            PROD_DB_NAME=${DB_NAME} \
+            NODE_ENV=production \
+            WEBSITES_ENABLE_APP_SERVICE_STORAGE=false \
+            PORT=80 \
+            LOGGING_LEVEL=Verbose

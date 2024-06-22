@@ -1,3 +1,13 @@
+/**terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "=3.0.0"
+    }
+  }
+}**/
+
+
 provider "azurerm" {
   features {}
 }
@@ -8,7 +18,7 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup202433"
+  name     = "myResourceGroup202434"
   location = "Germany West Central"
 }
 
@@ -135,4 +145,16 @@ output "cosmosdb_account_endpoint" {
 output "cosmosdb_primary_key" {
   value     = azurerm_cosmosdb_account.cosmos_account.primary_key
   sensitive = true
+}
+
+output "cosmosdb_username" {
+  value = var.prod_db_user
+}
+
+output "cosmosdb_password" {
+  value = var.prod_db_password
+}
+
+output "cosmosdb_database_name" {
+  value = var.prod_db_name
 }
