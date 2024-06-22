@@ -8,7 +8,7 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup202428"
+  name     = "myResourceGroup202429"
   location = "Germany West Central"
 }
 
@@ -30,7 +30,7 @@ resource "azurerm_linux_web_app" "nodejs_app" {
     always_on = true
 
     application_stack {
-      docker_image_name   = "ghcr.io/nyctospark/node-app:latest"
+      docker_image_name   = "ghcr.io/software-dev-for-cloud-computing/node-app:latest"
       docker_registry_url = "https://ghcr.io"
     }
 
