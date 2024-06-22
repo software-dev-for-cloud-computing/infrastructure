@@ -23,11 +23,11 @@ jobs:
 
       - name: Set MongoDB Secrets
         run: |
-          echo "PROD_DB_USER = \"${{ secrets.PROD_DB_USER }}\"" >> terraform.tfvars
-          echo "PROD_DB_PASSWORD = \"${{ secrets.PROD_DB_PASSWORD }}\"" >> terraform.tfvars
-          echo "PROD_DB_HOST = \"${{ secrets.PROD_DB_HOST }}\"" >> terraform.tfvars
-          echo "PROD_DB_PORT = \"${{ secrets.PROD_DB_PORT }}\"" >> terraform.tfvars
-          echo "PROD_DB_NAME = \"${{ secrets.PROD_DB_NAME }}\"" >> terraform.tfvars
+          echo "prod_db_user = \"${{ secrets.PROD_DB_USER }}\"" >> terraform.tfvars
+          echo "prod_db_password = \"${{ secrets.PROD_DB_PASSWORD }}\"" >> terraform.tfvars
+          echo "prod_db_host = \"${{ secrets.PROD_DB_HOST }}\"" >> terraform.tfvars
+          echo "prod_db_port = \"${{ secrets.PROD_DB_PORT }}\"" >> terraform.tfvars
+          echo "prod_db_name = \"${{ secrets.PROD_DB_NAME }}\"" >> terraform.tfvars
 
       - name: Display terraform.tfvars
         run: cat terraform.tfvars
