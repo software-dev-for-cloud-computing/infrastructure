@@ -25,3 +25,5 @@ terraform.rc
 # Ignore environment variable files
 .env
 .terraform/
+delete_all_resources_groups.azcli
+delete_all_resources.azcli

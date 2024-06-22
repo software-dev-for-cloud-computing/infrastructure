@@ -21,6 +21,9 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Create empty terraform.tfvars
+        run: echo > terraform.tfvars
+
       - name: Set MongoDB Secrets
         run: |
           echo "prod_db_user = \"${{ secrets.PROD_DB_USER }}\"" >> terraform.tfvars
@@ -51,6 +54,10 @@ jobs:
           DB_PASSWORD=$(jq -r '.cosmosdb_password.value' tf_outputs.json)
           DB_HOST=$(jq -r '.cosmosdb_account_endpoint.value' tf_outputs.json)
           DB_NAME=$(jq -r '.cosmosdb_database_name.value' tf_outputs.json)
+          echo "prod_db_user = \"${DB_USER}\"" >> terraform.tfvars
+          echo "prod_db_password = \"${DB_PASSWORD}\"" >> terraform.tfvars
+          echo "prod_db_host = \"${DB_HOST}\"" >> terraform.tfvars
+          echo "prod_db_name = \"${DB_NAME}\"" >> terraform.tfvars
           echo "PROD_DB_USER=${DB_USER}" >> $GITHUB_ENV
           echo "PROD_DB_PASSWORD=${DB_PASSWORD}" >> $GITHUB_ENV
           echo "PROD_DB_HOST=${DB_HOST}" >> $GITHUB_ENV

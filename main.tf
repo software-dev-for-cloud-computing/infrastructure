@@ -6,7 +6,6 @@
     }
   }
 }**/
-
 provider "azurerm" {
   features {}
 }
@@ -17,7 +16,7 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup202433"
+  name     = "myResourceGroup202434"
   location = "Germany West Central"
 }
 
