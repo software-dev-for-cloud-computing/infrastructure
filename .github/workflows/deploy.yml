@@ -54,10 +54,6 @@ jobs:
           DB_PASSWORD=$(jq -r '.cosmosdb_password.value' tf_outputs.json)
           DB_HOST=$(jq -r '.cosmosdb_account_endpoint.value' tf_outputs.json)
           DB_NAME=$(jq -r '.cosmosdb_database_name.value' tf_outputs.json)
-          echo "prod_db_user = \"${DB_USER}\"" >> terraform.tfvars
-          echo "prod_db_password = \"${DB_PASSWORD}\"" >> terraform.tfvars
-          echo "prod_db_host = \"${DB_HOST}\"" >> terraform.tfvars
-          echo "prod_db_name = \"${DB_NAME}\"" >> terraform.tfvars
           echo "PROD_DB_USER=${DB_USER}" >> $GITHUB_ENV
           echo "PROD_DB_PASSWORD=${DB_PASSWORD}" >> $GITHUB_ENV
           echo "PROD_DB_HOST=${DB_HOST}" >> $GITHUB_ENV
@@ -65,7 +61,7 @@ jobs:
 
       - name: Configure App Service Environment Variables
         run: |
-          az webapp config appsettings set --name nodejs-app-alive-wahoo --resource-group myResourceGroup202432 --settings \
+          az webapp config appsettings set --name nodejs-app-${{ steps.parse_outputs.outputs.random_pet.name }} --resource-group myResourceGroup-${{ steps.parse_outputs.outputs.random_pet.name }} --settings \
             PROD_DB_USER=${{ env.PROD_DB_USER }} \
             PROD_DB_PASSWORD=${{ env.PROD_DB_PASSWORD }} \
             PROD_DB_HOST=${{ env.PROD_DB_HOST }} \

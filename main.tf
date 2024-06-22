@@ -1,11 +1,12 @@
-/**terraform {
+terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
       version = "=3.0.0"
     }
   }
-}**/
+}
+
 provider "azurerm" {
   features {}
 }
@@ -16,12 +17,12 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup202434"
+  name     = "myResourceGroup-${random_pet.name.id}"
   location = "Germany West Central"
 }
 
 resource "azurerm_service_plan" "app_service_plan" {
-  name                = "myAppServicePlan"
+  name                = "myAppServicePlan-${random_pet.name.id}"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   os_type             = "Linux"
@@ -49,11 +50,6 @@ resource "azurerm_linux_web_app" "nodejs_app" {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
     PORT                                = "80"
     LOGGING_LEVEL                       = "Verbose"
-    PROD_DB_USER                        = var.prod_db_user
-    PROD_DB_PASSWORD                    = var.prod_db_password
-    PROD_DB_HOST                        = var.prod_db_host
-    PROD_DB_PORT                        = var.prod_db_port
-    PROD_DB_NAME                        = var.prod_db_name
     NODE_ENV                            = "production"
   }
 
@@ -128,5 +124,5 @@ output "cosmosdb_password" {
 }
 
 output "cosmosdb_database_name" {
-  value = var.prod_db_name
+  value = azurerm_cosmosdb_mongo_database.mongo_database.name
 }
