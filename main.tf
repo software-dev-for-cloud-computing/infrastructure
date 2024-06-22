@@ -17,7 +17,7 @@ resource "azurerm_service_plan" "app_service_plan" {
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   os_type             = "Linux"
-  sku_name            = "F1"
+  sku_name            = "B1"
 }
 
 resource "azurerm_linux_web_app" "nodejs_app" {
@@ -27,7 +27,7 @@ resource "azurerm_linux_web_app" "nodejs_app" {
   service_plan_id     = azurerm_service_plan.app_service_plan.id
 
   site_config {
-    always_on = false
+    always_on = true
 
     application_stack {
       docker_image_name   = "ghcr.io/nyctospark/node-app:latest"
