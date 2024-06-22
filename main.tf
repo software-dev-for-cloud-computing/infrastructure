@@ -7,7 +7,6 @@
   }
 }**/
 
-
 provider "azurerm" {
   features {}
 }
@@ -18,7 +17,7 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup202434"
+  name     = "myResourceGroup202433"
   location = "Germany West Central"
 }
 
@@ -28,26 +27,6 @@ resource "azurerm_service_plan" "app_service_plan" {
   resource_group_name = azurerm_resource_group.main.name
   os_type             = "Linux"
   sku_name            = "B1"
-}
-
-variable "prod_db_user" {
-  description = "The username for the production database"
-}
-
-variable "prod_db_password" {
-  description = "The password for the production database"
-}
-
-variable "prod_db_host" {
-  description = "The host for the production database"
-}
-
-variable "prod_db_port" {
-  description = "The port for the production database"
-}
-
-variable "prod_db_name" {
-  description = "The name of the production database"
 }
 
 resource "azurerm_linux_web_app" "nodejs_app" {
@@ -96,12 +75,6 @@ resource "azurerm_linux_web_app" "nodejs_app" {
       }
     }
   }
-
-  depends_on = [
-    azurerm_cosmosdb_account.cosmos_account,
-    azurerm_cosmosdb_mongo_database.mongo_database,
-    azurerm_cosmosdb_mongo_collection.mongo_collection
-  ]
 }
 
 resource "azurerm_cosmosdb_account" "cosmos_account" {

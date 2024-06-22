@@ -21,6 +21,17 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Set MongoDB Secrets
+        run: |
+          echo "prod_db_user = \"${{ secrets.PROD_DB_USER }}\"" >> terraform.tfvars
+          echo "prod_db_password = \"${{ secrets.PROD_DB_PASSWORD }}\"" >> terraform.tfvars
+          echo "prod_db_host = \"${{ secrets.PROD_DB_HOST }}\"" >> terraform.tfvars
+          echo "prod_db_port = \"${{ secrets.PROD_DB_PORT }}\"" >> terraform.tfvars
+          echo "prod_db_name = \"${{ secrets.PROD_DB_NAME }}\"" >> terraform.tfvars
+
+      - name: Display terraform.tfvars
+        run: cat terraform.tfvars
+
       - name: Terraform Init
         run: terraform init
 
@@ -48,10 +59,10 @@ jobs:
       - name: Configure App Service Environment Variables
         run: |
           az webapp config appsettings set --name nodejs-app-alive-wahoo --resource-group myResourceGroup202432 --settings \
-            PROD_DB_USER=${DB_USER} \
-            PROD_DB_PASSWORD=${DB_PASSWORD} \
-            PROD_DB_HOST=${DB_HOST} \
-            PROD_DB_NAME=${DB_NAME} \
+            PROD_DB_USER=${{ env.PROD_DB_USER }} \
+            PROD_DB_PASSWORD=${{ env.PROD_DB_PASSWORD }} \
+            PROD_DB_HOST=${{ env.PROD_DB_HOST }} \
+            PROD_DB_NAME=${{ env.PROD_DB_NAME }} \
             NODE_ENV=production \
             WEBSITES_ENABLE_APP_SERVICE_STORAGE=false \
             PORT=80 \
