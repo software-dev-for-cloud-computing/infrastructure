@@ -8,7 +8,7 @@ resource "random_pet" "name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "myResourceGroup202429"
+  name     = "myResourceGroup202430"
   location = "Germany West Central"
 }
 
@@ -41,17 +41,17 @@ resource "azurerm_linux_web_app" "nodejs_app" {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
     PORT                                = "80"
     LOGGING_LEVEL                       = "Verbose"
-    DB_USER                             = var.mongo_username
-    DB_PASSWORD                         = var.mongo_password
-    DB_HOST                             = replace(azurerm_cosmosdb_account.cosmos_account.endpoint, "https://", "")
-    DB_PORT                             = "10255"
-    DB_NAME                             = "mydatabase"
+    PROD_DB_USER                        = var.prod_db_user
+    PROD_DB_PASSWORD                    = var.prod_db_password
+    PROD_DB_HOST                        = var.prod_db_host
+    PROD_DB_PORT                        = var.prod_db_port
+    PROD_DB_NAME                        = var.prod_db_name
     NODE_ENV                            = "production"
   }
 
   connection_string {
     name  = "MONGODB_URI"
-    value = "mongodb://${var.mongo_username}:${var.mongo_password}@${replace(azurerm_cosmosdb_account.cosmos_account.endpoint, "https://", "")}:10255/mydatabase?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@${var.mongo_username}@"
+    value = "mongodb://${var.prod_db_user}:${var.prod_db_password}@${var.prod_db_host}:${var.prod_db_port}/${var.prod_db_name}?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@${var.prod_db_user}@"
     type  = "Custom"
   }
 
@@ -72,6 +72,26 @@ resource "azurerm_linux_web_app" "nodejs_app" {
     azurerm_cosmosdb_mongo_database.mongo_database,
     azurerm_cosmosdb_mongo_collection.mongo_collection
   ]
+}
+
+variable "prod_db_user" {
+  description = "The username for the production database"
+}
+
+variable "prod_db_password" {
+  description = "The password for the production database"
+}
+
+variable "prod_db_host" {
+  description = "The host for the production database"
+}
+
+variable "prod_db_port" {
+  description = "The port for the production database"
+}
+
+variable "prod_db_name" {
+  description = "The name of the production database"
 }
 
 resource "azurerm_cosmosdb_account" "cosmos_account" {

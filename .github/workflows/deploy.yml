@@ -22,9 +22,18 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Set MongoDB Secrets
+        env:
+          PROD_DB_USER: ${{ secrets.PROD_DB_USER }}
+          PROD_DB_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
+          PROD_DB_HOST: ${{ secrets.PROD_DB_HOST }}
+          PROD_DB_PORT: ${{ secrets.PROD_DB_PORT }}
+          PROD_DB_NAME: ${{ secrets.PROD_DB_NAME }}
         run: |
-            echo "mongo_username = \"${{ secrets.MONGO_USERNAME }}\"" > terraform.tfvars
-            echo "mongo_password = \"${{ secrets.MONGO_PASSWORD }}\"" >> terraform.tfvars
+          echo "PROD_DB_USER = \"$PROD_DB_USER\"" > terraform.tfvars
+          echo "PROD_DB_PASSWORD = \"$PROD_DB_PASSWORD\"" >> terraform.tfvars
+          echo "PROD_DB_HOST = \"$PROD_DB_HOST\"" >> terraform.tfvars
+          echo "PROD_DB_PORT = \"$PROD_DB_PORT\"" >> terraform.tfvars
+          echo "PROD_DB_NAME = \"$PROD_DB_NAME\"" >> terraform.tfvars
 
       - name: Terraform Init
         run: terraform init
