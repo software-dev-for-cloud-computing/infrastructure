@@ -23,4 +23,3 @@ variable "prod_db_name" {
   description = "The name of the production database"
   type        = string
 }
-
