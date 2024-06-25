@@ -34,6 +34,7 @@ jobs:
         run: terraform apply -auto-approve tfplan
 
       - name: Verify and Output Terraform Outputs
+        id: output
         run: |
           echo "Verifying and Outputting Terraform Outputs..."
           terraform output -json > tf_outputs.json
@@ -42,12 +43,7 @@ jobs:
           cat tf_outputs.json
 
           echo "Validating JSON structure of tf_outputs.json:"
-          if jq empty tf_outputs.json; then
-            echo "JSON structure is valid."
-          else
-            echo "Invalid JSON structure."
-            exit 1
-          fi
+          jq empty tf_outputs.json
 
       - name: Parse Terraform Outputs and Set Environment Variables
         id: parse_outputs
@@ -64,11 +60,10 @@ jobs:
           else
             echo "tf_outputs.json file not found"
             exit 1
-          fi
 
       - name: Configure App Service Environment Variables
         run: |
-          az webapp config appsettings set --name nodejs-app-${{ steps.parse_outputs.outputs.random_pet.name }} --resource-group myResourceGroup-${{ steps.parse_outputs.outputs.random_pet.name }} --settings \
+          az webapp config appsettings set --name nodejs-app-${{ steps.output.outputs.random_pet.name }} --resource-group myResourceGroup-${{ steps.output.outputs.random_pet.name }} --settings \
             PROD_DB_USER=${{ env.PROD_DB_USER }} \
             PROD_DB_PASSWORD=${{ env.PROD_DB_PASSWORD }} \
             PROD_DB_HOST=${{ env.PROD_DB_HOST }} \
