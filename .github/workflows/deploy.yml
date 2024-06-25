@@ -41,6 +41,11 @@ jobs:
           terraform output -json > tf_outputs.json
           cat tf_outputs.json # Ausgabe des Inhalts der tf_outputs.json zur Überprüfung
 
+      - name: Display JSON file content
+        run: |
+          echo "Content of tf_outputs.json:"
+          cat tf_outputs.json
+
       - name: Validate JSON structure
         run: |
           cat tf_outputs.json | jq '.' # Validieren der JSON-Struktur
