@@ -8,11 +8,11 @@ output "cosmosdb_primary_key" {
 }
 
 output "cosmosdb_username" {
-  value = var.prod_db_user
+  value = azurerm_cosmosdb_account.cosmos_account.name
 }
 
 output "cosmosdb_password" {
-  value = var.prod_db_password
+  value = azurerm_cosmosdb_account.cosmos_account.primary_key
 }
 
 output "cosmosdb_database_name" {

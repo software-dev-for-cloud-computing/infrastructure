@@ -51,15 +51,11 @@ resource "azurerm_linux_web_app" "nodejs_app" {
     PORT                                = "80"
     LOGGING_LEVEL                       = "Verbose"
     NODE_ENV                            = "production"
-    PROD_DB_USER                        = var.prod_db_user
-    PROD_DB_PASSWORD                    = var.prod_db_password
-    PROD_DB_HOST                        = var.prod_db_host
-    PROD_DB_NAME                        = var.prod_db_name
   }
 
   connection_string {
     name  = "MONGODB_URI"
-    value = "mongodb://${var.prod_db_user}:${var.prod_db_password}@${var.prod_db_host}:${var.prod_db_port}/${var.prod_db_name}?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@${var.prod_db_user}@"
+    value = "mongodb://${var.prod_db_user}:${var.prod_db_password}@${azurerm_cosmosdb_account.cosmos_account.endpoint}:${var.prod_db_port}/${var.prod_db_name}?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@${var.prod_db_user}@"
     type  = "Custom"
   }
 
@@ -75,7 +71,6 @@ resource "azurerm_linux_web_app" "nodejs_app" {
     }
   }
 }
-
 
 resource "azurerm_cosmosdb_account" "cosmos_account" {
   name                = "cosmos-db-${random_pet.name.id}"
