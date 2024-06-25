@@ -60,10 +60,11 @@ jobs:
           else
             echo "tf_outputs.json file not found"
             exit 1
+          fi
 
       - name: Configure App Service Environment Variables
         run: |
-          az webapp config appsettings set --name nodejs-app-${{ steps.output.outputs.random_pet.name }} --resource-group myResourceGroup-${{ steps.output.outputs.random_pet.name }} --settings \
+          az webapp config appsettings set --name nodejs-app-${{ steps.output.outputs.random_pet_name }} --resource-group myResourceGroup-${{ steps.output.outputs.random_pet_name }} --settings \
             PROD_DB_USER=${{ env.PROD_DB_USER }} \
             PROD_DB_PASSWORD=${{ env.PROD_DB_PASSWORD }} \
             PROD_DB_HOST=${{ env.PROD_DB_HOST }} \
