@@ -36,7 +36,12 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
 
-      - name: Output Terraform Outputs
+      - name: Display Terraform Outputs
+        run: |
+          echo "Displaying Terraform Outputs..."
+          terraform output -json
+
+      - name: Output Terraform Outputs to JSON
         run: |
           echo "Generating tf_outputs.json..."
           terraform output -json > tf_outputs.json
