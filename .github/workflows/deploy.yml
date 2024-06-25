@@ -39,7 +39,11 @@ jobs:
       - name: Output Terraform Outputs
         run: |
           terraform output -json > tf_outputs.json
-          cat tf_outputs.json # Debugging: Ausgabe des Inhalts der tf_outputs.json
+          cat tf_outputs.json # Ausgabe des Inhalts der tf_outputs.json zur Überprüfung
+
+      - name: Validate JSON structure
+        run: |
+          cat tf_outputs.json | jq '.' # Validieren der JSON-Struktur
 
       - name: Parse Terraform Outputs and Set Environment Variables
         id: parse_outputs
