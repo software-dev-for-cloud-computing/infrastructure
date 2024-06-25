@@ -8,11 +8,6 @@ variable "prod_db_password" {
   type        = string
 }
 
-variable "prod_db_host" {
-  description = "The host for the production database"
-  type        = string
-}
-
 variable "prod_db_port" {
   description = "The port for the production database"
   type        = string
