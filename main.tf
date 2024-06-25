@@ -51,6 +51,10 @@ resource "azurerm_linux_web_app" "nodejs_app" {
     PORT                                = "80"
     LOGGING_LEVEL                       = "Verbose"
     NODE_ENV                            = "production"
+    PROD_DB_USER                        = var.prod_db_user
+    PROD_DB_PASSWORD                    = var.prod_db_password
+    PROD_DB_HOST                        = var.prod_db_host
+    PROD_DB_NAME                        = var.prod_db_name
   }
 
   connection_string {
@@ -71,6 +75,7 @@ resource "azurerm_linux_web_app" "nodejs_app" {
     }
   }
 }
+
 
 resource "azurerm_cosmosdb_account" "cosmos_account" {
   name                = "cosmos-db-${random_pet.name.id}"
