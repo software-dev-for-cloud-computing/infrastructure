@@ -12,7 +12,8 @@ output "cosmosdb_username" {
 }
 
 output "cosmosdb_password" {
-  value = azurerm_cosmosdb_account.cosmos_account.primary_key
+  value     = azurerm_cosmosdb_account.primary_master_key
+  sensitive = true
 }
 
 output "cosmosdb_database_name" {
