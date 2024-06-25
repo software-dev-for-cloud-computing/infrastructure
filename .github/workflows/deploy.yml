@@ -45,7 +45,6 @@ jobs:
         id: parse_outputs
         run: |
           if [ -f tf_outputs.json ]; then
-            cat tf_outputs.json # Debugging: Ausgabe des Inhalts der tf_outputs.json
             DB_USER=$(jq -r '.cosmosdb_username.value' tf_outputs.json)
             DB_PASSWORD=$(jq -r '.cosmosdb_password.value' tf_outputs.json)
             DB_HOST=$(jq -r '.cosmosdb_account_endpoint.value' tf_outputs.json)
