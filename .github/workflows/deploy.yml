@@ -36,7 +36,7 @@ jobs:
       - name: Output Terraform Outputs to JSON file
         run: |
           echo "Outputting Terraform Outputs to JSON file..."
-          terraform output -json | tee tf_outputs.json
+          terraform output -json | jq . > tf_outputs.json
 
       - name: Display raw content of tf_outputs.json
         run: |
