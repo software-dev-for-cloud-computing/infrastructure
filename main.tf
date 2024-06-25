@@ -84,6 +84,6 @@ resource "azurerm_linux_web_app" "nodejs_app" {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
     PORT                                = "80"
     NODE_ENV                            = "production"
-    MONGODB_URI                         = "mongodb://${azurerm_cosmosdb_account.cosmos_account.name}:${azurerm_cosmosdb_account.cosmos_account.primary_key}@${azurerm_cosmosdb_account.cosmos_account.endpoint}:10255/${azurerm_cosmosdb_mongo_database.mongo_database.name}?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@${azurerm_cosmosdb_account.cosmos_account.name}@"
+    MONGODB_URI                        = "mongodb://${azurerm_cosmosdb_account.cosmos_account.name}:cosmos_account.primary_key}@${azurerm_cosmosdb_account.cosmos_account.endpoint}:10255/${azurerm_cosmosdb_mongo_database.mongo_database.name}?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@${azurerm_cosmosdb_account.cosmos_account.name}@"
   }
 }
