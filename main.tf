@@ -83,13 +83,8 @@ resource "azurerm_linux_web_app" "nodejs_app" {
   app_settings = {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
     PORT                                = "80"
-    LOGGING_LEVEL                       = "Verbose"
     NODE_ENV                            = "production"
-    PROD_DB_USER                        = var.prod_db_user
-    PROD_DB_PASSWORD                    = var.prod_db_password
-    PROD_DB_HOST                        = azurerm_cosmosdb_account.cosmos_account.endpoint
-    PROD_DB_PORT                        = var.prod_db_port
-    PROD_DB_NAME                        = var.prod_db_name
+    MONGODB_URI                         = "mongodb://${var.prod_db_user}:${var.prod_db_password}@${azurerm_cosmosdb_account.cosmos_account.endpoint}:${var.prod_db_port}/${var.prod_db_name}?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@${var.prod_db_user}@"
   }
 
   connection_string {

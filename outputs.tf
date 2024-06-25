@@ -1,3 +1,4 @@
+
 output "cosmosdb_account_endpoint" {
   value = azurerm_cosmosdb_account.cosmos_account.endpoint
 }
@@ -19,4 +20,3 @@ output "cosmosdb_password" {
 output "cosmosdb_database_name" {
   value = azurerm_cosmosdb_mongo_database.mongo_database.name
 }
-
