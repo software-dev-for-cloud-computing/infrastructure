@@ -33,47 +33,39 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
 
-      - name: Verify and Output Terraform Outputs
-        id: output
+      - name: Output Terraform Outputs to JSON file
         run: |
-          echo "Verifying and Outputting Terraform Outputs..."
+          echo "Outputting Terraform Outputs to JSON file..."
           terraform output -json > tf_outputs.json
 
-          echo "Raw content of tf_outputs.json:"
+      - name: Display raw content of tf_outputs.json
+        run: |
+          echo "Displaying raw content of tf_outputs.json..."
           cat tf_outputs.json
 
-          echo "Validating JSON structure of tf_outputs.json:"
-          if jq empty tf_outputs.json; then
-            echo "JSON structure is valid."
-          else
-            echo "Invalid JSON structure detected:"
-            cat tf_outputs.json
-            exit 1
-          fi
+      - name: Validate JSON structure of tf_outputs.json
+        run: |
+          echo "Validating JSON structure of tf_outputs.json..."
+          jq empty tf_outputs.json || { echo "Invalid JSON structure"; exit 1; }
 
       - name: Parse Terraform Outputs and Set Environment Variables
         id: parse_outputs
         run: |
-          if [ -f tf_outputs.json ]; then
-            echo "Parsing tf_outputs.json"
-            DB_USER=$(jq -r '.cosmosdb_username.value' tf_outputs.json)
-            DB_PASSWORD=$(jq -r '.cosmosdb_password.value' tf_outputs.json)
-            DB_HOST=$(jq -r '.cosmosdb_account_endpoint.value' tf_outputs.json)
-            DB_NAME=$(jq -r '.cosmosdb_database_name.value' tf_outputs.json)
-            echo "Parsed values:"
-            echo "DB_USER: $DB_USER"
-            echo "DB_PASSWORD: [REDACTED]"
-            echo "DB_HOST: $DB_HOST"
-            echo "DB_NAME: $DB_NAME"
-            echo "Setting environment variables"
-            echo "PROD_DB_USER=$DB_USER" >> $GITHUB_ENV
-            echo "PROD_DB_PASSWORD=$DB_PASSWORD" >> $GITHUB_ENV
-            echo "PROD_DB_HOST=$DB_HOST" >> $GITHUB_ENV
-            echo "PROD_DB_NAME=$DB_NAME" >> $GITHUB_ENV
-          else
-            echo "tf_outputs.json file not found"
-            exit 1
-          fi
+          echo "Parsing tf_outputs.json..."
+          DB_USER=$(jq -r '.cosmosdb_username.value' tf_outputs.json)
+          DB_PASSWORD=$(jq -r '.cosmosdb_password.value' tf_outputs.json)
+          DB_HOST=$(jq -r '.cosmosdb_account_endpoint.value' tf_outputs.json)
+          DB_NAME=$(jq -r '.cosmosdb_database_name.value' tf_outputs.json)
+          echo "Parsed values:"
+          echo "DB_USER: $DB_USER"
+          echo "DB_PASSWORD: [REDACTED]"
+          echo "DB_HOST: $DB_HOST"
+          echo "DB_NAME: $DB_NAME"
+          echo "Setting environment variables"
+          echo "PROD_DB_USER=$DB_USER" >> $GITHUB_ENV
+          echo "PROD_DB_PASSWORD=$DB_PASSWORD" >> $GITHUB_ENV
+          echo "PROD_DB_HOST=$DB_HOST" >> $GITHUB_ENV
+          echo "PROD_DB_NAME=$DB_NAME" >> $GITHUB_ENV
 
       - name: Configure App Service Environment Variables
         run: |
@@ -88,7 +80,7 @@ jobs:
             PORT=80 \
             LOGGING_LEVEL=Verbose
 
-      - name: Debugging Terraform Outputs
+      - name: Debugging Terraform Outputs on failure
         if: failure()
         run: |
           echo "Debugging Terraform Outputs on failure"
