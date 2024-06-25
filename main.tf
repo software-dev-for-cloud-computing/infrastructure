@@ -55,7 +55,7 @@ resource "azurerm_linux_web_app" "nodejs_app" {
 
   connection_string {
     name  = "MONGODB_URI"
-    value = "mongodb://${var.prod_db_user}:${var.prod_db_password}@${azurerm_cosmosdb_account.cosmos_account.connection_strings[0]}:${var.prod_db_port}/${var.prod_db_name}?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@${var.prod_db_user}@"
+    value = "mongodb://${var.prod_db_user}:${var.prod_db_password}@${azurerm_cosmosdb_account.cosmos_account.endpoint}:${var.prod_db_port}/${var.prod_db_name}?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@${var.prod_db_user}@"
     type  = "Custom"
   }
 
