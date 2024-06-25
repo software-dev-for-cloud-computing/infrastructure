@@ -21,9 +21,6 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Check jq installation
-        run: jq --version
-
       - name: Install jq if not present
         run: sudo apt-get install -y jq
 
@@ -45,7 +42,12 @@ jobs:
           cat tf_outputs.json
 
           echo "Validating JSON structure of tf_outputs.json:"
-          cat tf_outputs.json | jq '.'
+          if jq empty tf_outputs.json; then
+            echo "JSON structure is valid."
+          else
+            echo "Invalid JSON structure."
+            exit 1
+          fi
 
       - name: Parse Terraform Outputs and Set Environment Variables
         id: parse_outputs
