@@ -1,4 +1,4 @@
-name: 'Terraform Deployment'
+name: Terraform Deployment
 
 on:
   push:
@@ -10,84 +10,48 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v1
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: latest
 
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Azure login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Install jq if not present
-        run: sudo apt-get install -y jq
+    - name: Install JQ
+      run: sudo apt-get install -y jq
 
-      - name: Terraform Init
-        run: terraform init -upgrade
+    - name: Terraform Init
+      run: terraform init -upgrade
 
-      - name: Terraform Plan
-        run: terraform plan -out=tfplan
+    - name: Terraform Plan
+      run: terraform plan -out=tfplan
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
+    - name: Terraform Apply
+      run: terraform apply -auto-approve tfplan
 
-      - name: Output Terraform Outputs to JSON file
-        run: |
-          echo "Outputting Terraform Outputs to JSON file..."
-          terraform output -json | jq . > tf_outputs.json
+    - name: Outputting Terraform Outputs to JSON file
+      run: |
+        echo "Outputting Terraform Outputs to JSON file..."
+        terraform output -json > tf_outputs.json
+      continue-on-error: true
 
-      - name: Display raw content of tf_outputs.json
-        run: |
-          echo "Displaying raw content of tf_outputs.json..."
-          cat tf_outputs.json
+    - name: Debugging Terraform Outputs on failure
+      if: failure()
+      run: |
+        echo "Debugging Terraform Outputs on failure"
+        echo "Contents of tf_outputs.json:"
+        cat tf_outputs.json
+      continue-on-error: true
 
-      - name: Validate JSON structure of tf_outputs.json
-        run: |
-          echo "Validating JSON structure of tf_outputs.json..."
-          if ! jq empty tf_outputs.json; then
-            echo "Invalid JSON structure"
-            exit 1
-          else
-            echo "JSON structure is valid."
-          fi
-
-      - name: Parse Terraform Outputs and Set Environment Variables
-        id: parse_outputs
-        run: |
-          echo "Parsing tf_outputs.json..."
-          DB_USER=$(jq -r '.cosmosdb_username.value' tf_outputs.json)
-          DB_PASSWORD=$(jq -r '.cosmosdb_password.value' tf_outputs.json)
-          DB_HOST=$(jq -r '.cosmosdb_account_endpoint.value' tf_outputs.json)
-          DB_NAME=$(jq -r '.cosmosdb_database_name.value' tf_outputs.json)
-          echo "Parsed values:"
-          echo "DB_USER: $DB_USER"
-          echo "DB_PASSWORD: [REDACTED]"
-          echo "DB_HOST: $DB_HOST"
-          echo "DB_NAME: $DB_NAME"
-          echo "Setting environment variables"
-          echo "PROD_DB_USER=$DB_USER" >> $GITHUB_ENV
-          echo "PROD_DB_PASSWORD=$DB_PASSWORD" >> $GITHUB_ENV
-          echo "PROD_DB_HOST=$DB_HOST" >> $GITHUB_ENV
-          echo "PROD_DB_NAME=$DB_NAME" >> $GITHUB_ENV
-
-      - name: Configure App Service Environment Variables
-        run: |
-          echo "Configuring App Service Environment Variables"
-          az webapp config appsettings set --name nodejs-app-${{ steps.parse_outputs.outputs.random_pet_name }} --resource-group myResourceGroup-${{ steps.parse_outputs.outputs.random_pet_name }} --settings \
-            PROD_DB_USER=${{ env.PROD_DB_USER }} \
-            PROD_DB_PASSWORD=${{ env.PROD_DB_PASSWORD }} \
-            PROD_DB_HOST=${{ env.PROD_DB_HOST }} \
-            PROD_DB_NAME=${{ env.PROD_DB_NAME }} \
-            NODE_ENV=production \
-            WEBSITES_ENABLE_APP_SERVICE_STORAGE=false \
-            PORT=80 \
-            LOGGING_LEVEL=Verbose
-
-      - name: Debugging Terraform Outputs on failure
-        if: failure()
-        run: |
-          echo "Debugging Terraform Outputs on failure"
-          echo "Contents of tf_outputs.json:"
-          cat tf_outputs.json
+    - name: Upload Terraform Outputs
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: tf_outputs
+        path: tf_outputs.json
