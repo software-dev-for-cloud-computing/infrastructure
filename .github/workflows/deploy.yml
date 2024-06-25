@@ -43,16 +43,29 @@ jobs:
           cat tf_outputs.json
 
           echo "Validating JSON structure of tf_outputs.json:"
-          jq empty tf_outputs.json
+          if jq empty tf_outputs.json; then
+            echo "JSON structure is valid."
+          else
+            echo "Invalid JSON structure detected:"
+            cat tf_outputs.json
+            exit 1
+          fi
 
       - name: Parse Terraform Outputs and Set Environment Variables
         id: parse_outputs
         run: |
           if [ -f tf_outputs.json ]; then
+            echo "Parsing tf_outputs.json"
             DB_USER=$(jq -r '.cosmosdb_username.value' tf_outputs.json)
             DB_PASSWORD=$(jq -r '.cosmosdb_password.value' tf_outputs.json)
             DB_HOST=$(jq -r '.cosmosdb_account_endpoint.value' tf_outputs.json)
             DB_NAME=$(jq -r '.cosmosdb_database_name.value' tf_outputs.json)
+            echo "Parsed values:"
+            echo "DB_USER: $DB_USER"
+            echo "DB_PASSWORD: [REDACTED]"
+            echo "DB_HOST: $DB_HOST"
+            echo "DB_NAME: $DB_NAME"
+            echo "Setting environment variables"
             echo "PROD_DB_USER=$DB_USER" >> $GITHUB_ENV
             echo "PROD_DB_PASSWORD=$DB_PASSWORD" >> $GITHUB_ENV
             echo "PROD_DB_HOST=$DB_HOST" >> $GITHUB_ENV
@@ -64,6 +77,7 @@ jobs:
 
       - name: Configure App Service Environment Variables
         run: |
+          echo "Configuring App Service Environment Variables"
           az webapp config appsettings set --name nodejs-app-${{ steps.output.outputs.random_pet_name }} --resource-group myResourceGroup-${{ steps.output.outputs.random_pet_name }} --settings \
             PROD_DB_USER=${{ env.PROD_DB_USER }} \
             PROD_DB_PASSWORD=${{ env.PROD_DB_PASSWORD }} \
@@ -73,3 +87,10 @@ jobs:
             WEBSITES_ENABLE_APP_SERVICE_STORAGE=false \
             PORT=80 \
             LOGGING_LEVEL=Verbose
+
+      - name: Debugging Terraform Outputs
+        if: failure()
+        run: |
+          echo "Debugging Terraform Outputs on failure"
+          echo "Contents of tf_outputs.json:"
+          cat tf_outputs.json
