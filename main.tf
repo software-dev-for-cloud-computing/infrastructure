@@ -115,3 +115,32 @@ resource "azurerm_storage_blob" "blob_fastAPI" {
   storage_container_name = azurerm_storage_container.container.name
   type                   = "Block"
 }
+
+# Qdrant Container APP
+
+resource "azurerm_container_group" "qdrant_container" {
+  name                = "qdrant-container-group12"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  os_type             = "Linux"
+  
+  container {
+    name   = "qdrant"
+    image  = "qdrant/qdrant:v0.9.0" # Hier kannst du die gewünschte Version angeben
+    cpu    = "1"
+    memory = "1.5"
+
+    ports {
+      port     = 6333
+      protocol = "TCP"
+    }
+
+    environment_variables = {
+      QDRANT__SERVICE__WEBSERVER__PORT = "6333"
+    }
+  }
+
+  tags = {
+    environment = "testing"
+  }
+}
