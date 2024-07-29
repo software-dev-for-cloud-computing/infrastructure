@@ -19,3 +19,8 @@ output "cosmosdb_password" {
 output "cosmosdb_database_name" {
   value = azurerm_cosmosdb_mongo_database.mongo_database.name
 }
+
+output "storage_account_connection_string" {
+  value = azurerm_storage_account.account.primary_connection_string
+  sensitive = true
+}

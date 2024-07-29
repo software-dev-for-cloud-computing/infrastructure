@@ -87,3 +87,31 @@ resource "azurerm_linux_web_app" "nodejs_app" {
     MONGODB_URI                         = azurerm_cosmosdb_account.cosmos_account.connection_strings[0]
   }
 }
+
+
+# Blob storage for FASTAPI
+
+# Storage account
+resource "azurerm_storage_account" "account" {
+  name                     = "examplestoracc-${random_pet.name.id}"
+  resource_group_name      = azurerm_resource_group.main.name
+  location                 = azurerm_resource_group.main.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
+#Storage container
+resource "azurerm_storage_container" "container" {
+  name                  = "content-${random_pet.name.id}"
+  storage_account_name  = azurerm_storage_account.account.name
+  container_access_type = "private"
+}
+
+# Blob
+# source = "path/to/local/file.txt" - path to the file that you want to upload
+resource "azurerm_storage_blob" "blob_fastAPI" {
+  name                   = "myfile.txt"
+  storage_account_name   = azurerm_resource_group.main.name
+  storage_container_name = azurerm_resource_group.main.location
+  type                   = "Block"
+}
