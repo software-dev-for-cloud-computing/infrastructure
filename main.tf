@@ -93,7 +93,7 @@ resource "azurerm_linux_web_app" "nodejs_app" {
 
 # Storage account
 resource "azurerm_storage_account" "account" {
-  name                     = "store_hdm_account_test1"
+  name                     = "storehdmtest1"
   resource_group_name      = azurerm_resource_group.main.name
   location                 = azurerm_resource_group.main.location
   account_tier             = "Standard"
@@ -102,7 +102,7 @@ resource "azurerm_storage_account" "account" {
 
 #Storage container
 resource "azurerm_storage_container" "container" {
-  name                  = "content123_hdm_test1"
+  name                  = "123hdmtest1"
   storage_account_name  = azurerm_storage_account.account.name
   container_access_type = "private"
 }
