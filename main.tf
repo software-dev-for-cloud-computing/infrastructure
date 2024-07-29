@@ -93,7 +93,7 @@ resource "azurerm_linux_web_app" "nodejs_app" {
 
 # Storage account
 resource "azurerm_storage_account" "account" {
-  name                     = "examplestoracc"
+  name                     = "store_hdm_account_test1"
   resource_group_name      = azurerm_resource_group.main.name
   location                 = azurerm_resource_group.main.location
   account_tier             = "Standard"
@@ -102,7 +102,7 @@ resource "azurerm_storage_account" "account" {
 
 #Storage container
 resource "azurerm_storage_container" "container" {
-  name                  = "content"
+  name                  = "content123_hdm_test1"
   storage_account_name  = azurerm_storage_account.account.name
   container_access_type = "private"
 }
@@ -110,8 +110,8 @@ resource "azurerm_storage_container" "container" {
 # Blob
 # source = "path/to/local/file.txt" - path to the file that you want to upload - https://registry.terraform.io/providers/tfproviders/azurerm/latest/docs/data-sources/storage_blob
 resource "azurerm_storage_blob" "blob_fastAPI" {
-  name                   = "myfile.txt"
-  storage_account_name   = azurerm_resource_group.main.name
-  storage_container_name = azurerm_resource_group.main.location
+  name                   = "FASTAPI1myfile.txt"
+  storage_account_name   = azurerm_storage_account.account.name
+  storage_container_name = azurerm_storage_container.container.name
   type                   = "Block"
 }
