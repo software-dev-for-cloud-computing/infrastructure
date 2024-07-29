@@ -93,7 +93,7 @@ resource "azurerm_linux_web_app" "nodejs_app" {
 
 # Storage account
 resource "azurerm_storage_account" "account" {
-  name                     = "storehdmtest1"
+  name                     = "storehdmtest2"
   resource_group_name      = azurerm_resource_group.main.name
   location                 = azurerm_resource_group.main.location
   account_tier             = "Standard"
@@ -102,7 +102,7 @@ resource "azurerm_storage_account" "account" {
 
 #Storage container
 resource "azurerm_storage_container" "container" {
-  name                  = "123hdmtest1"
+  name                  = "1256hdmtest1"
   storage_account_name  = azurerm_storage_account.account.name
   container_access_type = "private"
 }
@@ -126,7 +126,7 @@ resource "azurerm_container_group" "qdrant_container" {
   
   container {
     name   = "qdrant"
-    image  = "qdrant/qdrant:v1.10.1" # Hier kannst du die gewünschte Version angeben
+    image  = "qdrant/qdrant:v1.10.1"
     cpu    = "1"
     memory = "1.5"
 
