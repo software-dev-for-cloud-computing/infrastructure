@@ -126,7 +126,7 @@ resource "azurerm_container_group" "qdrant_container" {
   
   container {
     name   = "qdrant"
-    image  = "qdrant/qdrant:v0.9.0" # Hier kannst du die gewünschte Version angeben
+    image  = "qdrant/qdrant:v1.10.1" # Hier kannst du die gewünschte Version angeben
     cpu    = "1"
     memory = "1.5"
 
