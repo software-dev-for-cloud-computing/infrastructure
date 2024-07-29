@@ -144,3 +144,22 @@ resource "azurerm_container_group" "qdrant_container" {
     environment = "testing"
   }
 }
+
+# React Frontend Web App
+resource "azurerm_linux_web_app" "react_frontend" {
+  name                = "react-frontend-${random_pet.name.id}"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  service_plan_id     = azurerm_service_plan.app_service_plan.id
+
+  site_config {
+    always_on = true
+
+    application_stack {
+      docker_image_name   = "ghcr.io/software-dev-for-cloud-computing/react-app:latest"
+      docker_registry_url = "https://ghcr.io"
+    }
+
+    health_check_path = "/"
+  }
+}
