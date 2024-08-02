@@ -117,7 +117,7 @@ resource "azurerm_storage_blob" "blob_fastAPI" {
 }
 
 # Qdrant Container APP
-# Infos zu Connection: Die Containergruppe hat eine öffentliche IP, die dann über fqdn Attribut abgerufen werden kann. Wäre maybe eine Möglichkeit?
+# Infos zu Connection: Die Containergruppe kann eine öffentliche IP haben, die dann über fqdn Attribut abgerufen werden kann. Wäre maybe eine Möglichkeit?
 
 resource "azurerm_container_group" "qdrant_container" {
   name                = "qdrant-container-${random_pet.name.id}"
@@ -154,9 +154,7 @@ resource "azurerm_linux_web_app" "react_frontend" {
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   service_plan_id     = azurerm_service_plan.app_service_plan.id
-  identity {
-    type = "SystemAssigned"
-  }
+  
   site_config {
     always_on = true
 
@@ -166,19 +164,5 @@ resource "azurerm_linux_web_app" "react_frontend" {
     }
     health_check_path = "/"
   }
-  auth_settings {
-      enabled = true
-      default_provider = "AzureActiveDirectory"
-      issuer = "https://sts.windows.net/${var.tenant_id}/"
-      
-    active_directory {
-      client_id = var.client_id
-      client_secret = var.client_secret
-    }
   
-      unauthenticated_client_action = "RedirectToLoginPage"
-      allowed_external_redirect_urls = [
-        "https://login.microsoftonline.com",
-      ]
-    }
 }
