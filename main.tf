@@ -124,24 +124,30 @@ resource "azurerm_container_group" "qdrant_container" {
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   os_type             = "Linux"
-  ip_address_type = "Public"
-  dns_name_label = "qdrant"
+  ip_address_type     = "Public"
+  dns_name_label      = "qdrant"
   
   container {
     name   = "qdrant"
     image  = "ghcr.io/software-dev-for-cloud-computing/qdrant:latest"
     cpu    = "1"
     memory = "1.5"
-
+  
     ports {
       port     = 6333
       protocol = "TCP"
     }
-
+  
     environment_variables = {
       QDRANT__SERVICE__WEBSERVER__PORT = "6333"
     }
   }
+  
+
+  image_registry_credential {
+      server   = "ghcr.io"
+    }
+
   tags = {
     environment = "testing"
   }
