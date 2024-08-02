@@ -18,3 +18,19 @@ variable "prod_db_name" {
   description = "The name of the production database"
   type        = string
 }
+
+variable "tenant_id" {
+  description = "The Tenant ID for Azure AD"
+  type        = string
+}
+
+variable "client_id" {
+  description = "The Client ID for Azure AD"
+  type        = string
+}
+
+variable "client_secret" {
+  description = "The Client Secret for Azure AD"
+  type        = string
+  sensitive   = true
+}
