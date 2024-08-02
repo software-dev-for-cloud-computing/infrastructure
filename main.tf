@@ -130,7 +130,7 @@ resource "azurerm_container_group" "qdrant_container" {
   container {
     name   = "qdrant"
     image  = "ghcr.io/software-dev-for-cloud-computing/qdrant:latest"
-    cpu    = "1"
+    cpu    = "0.5"
     memory = "1.5"
   
     ports {
