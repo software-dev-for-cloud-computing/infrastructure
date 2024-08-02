@@ -121,7 +121,7 @@ resource "azurerm_storage_blob" "blob_fastAPI" {
 # Infos zu Connection: Die Containergruppe kann eine öffentliche IP haben, die dann über fqdn Attribut abgerufen werden kann. Wäre maybe eine Möglichkeit?
 
 resource "azurerm_container_group" "qdrant_container" {
-  name                = "qdrant-container-${random_pet.name.id}"
+  name                = "qdrant-${random_pet.name.id}"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   os_type             = "Linux"
@@ -130,7 +130,7 @@ resource "azurerm_container_group" "qdrant_container" {
   
   container {
     name   = "qdrant"
-    image  = "qdrant/qdrant:latest"   # ghcr.io/software-dev-for-cloud-computing/qdrant:latest
+    image  = "ghcr.io/software-dev-for-cloud-computing/qdrant:latest"
     cpu    = "0.5"
     memory = "1.5"
   
