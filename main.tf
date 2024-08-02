@@ -125,7 +125,7 @@ resource "azurerm_container_group" "qdrant_container" {
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   os_type             = "Linux"
-  ip_address_type = "public"
+  ip_address_type     = "Public"
   
   container {
     name   = "qdrant"
