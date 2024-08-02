@@ -137,13 +137,7 @@ resource "azurerm_container_group" "qdrant_container" {
       port     = 6333
       protocol = "TCP"
     }
-  
-    environment_variables = {
-      QDRANT__SERVICE__WEBSERVER__PORT = "6333"
-    }
   }
-
-
   tags = {
     environment = "testing"
   }
