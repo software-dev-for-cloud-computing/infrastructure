@@ -25,10 +25,10 @@ output "storage_account_connection_string" {
   sensitive = true
 }
 
-output "fqdn" {
-  value = azurerm_container_group.qdrant_container.fqdn
+output "ip_adress_qdrant" {
+  value = azurerm_container_group.qdrant_container.ip_address
 }
 
 output "app_url" {
-  value = azurerm_linux_web_app.react_frontend.name
+  value = azurerm_linux_web_app.react_frontend.default_hostname
 }
