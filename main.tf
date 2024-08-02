@@ -144,6 +144,27 @@ resource "azurerm_container_group" "qdrant_container" {
   }
 }
 
+resource "azurerm_container_group" "example" {
+  name                = "example-containergroup-${random_pet.name.id}"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  os_type             = "Linux"
+  ip_address_type     = "Public"
+  dns_name_label      = "examplednslabel"
+
+  container {
+    name   = "example-container"
+    image  = "mcr.microsoft.com/azuredocs/aci-helloworld:latest"
+    cpu    = "0.5"
+    memory = "1.5"
+
+    ports {
+      port     = 80
+      protocol = "TCP"
+    }
+  }
+}
+
 # React Frontend Web App
 
 resource "azurerm_linux_web_app" "react_frontend" {
