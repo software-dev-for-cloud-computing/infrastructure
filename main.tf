@@ -116,6 +116,7 @@ resource "azurerm_storage_blob" "blob_fastAPI" {
   type                   = "Block"
 }
 
+
 # Qdrant Container APP
 # Infos zu Connection: Die Containergruppe kann eine öffentliche IP haben, die dann über fqdn Attribut abgerufen werden kann. Wäre maybe eine Möglichkeit?
 
@@ -129,7 +130,7 @@ resource "azurerm_container_group" "qdrant_container" {
   
   container {
     name   = "qdrant"
-    image  = "ghcr.io/software-dev-for-cloud-computing/qdrant:latest"
+    image  = "qdrant/qdrant:latest"   # ghcr.io/software-dev-for-cloud-computing/qdrant:latest
     cpu    = "0.5"
     memory = "1.5"
   
@@ -144,7 +145,7 @@ resource "azurerm_container_group" "qdrant_container" {
 }
 
 # React Frontend Web App
-# Info zu Connection: Hier kann man natürlich auch ein ConnectionString angeben, wie du es auch schon bei der NODE App gemacht hast.
+
 resource "azurerm_linux_web_app" "react_frontend" {
   name                = "react-frontend-${random_pet.name.id}"
   location            = azurerm_resource_group.main.location
