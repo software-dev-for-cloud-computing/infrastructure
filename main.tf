@@ -129,7 +129,7 @@ resource "azurerm_container_group" "qdrant_container" {
   
   container {
     name   = "qdrant"
-    image  = "qdrant/qdrant:v1.10.1"
+    image  = "qdrant/qdrant:latest"
     cpu    = "1"
     memory = "1.5"
 
