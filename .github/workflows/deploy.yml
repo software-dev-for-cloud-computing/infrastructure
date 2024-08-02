@@ -13,6 +13,23 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.CR_PAT }}
+
+    - name: Pull Qdrant Docker image
+      run: docker pull qdrant/qdrant
+
+    - name: Tag and push Qdrant Docker image to GitHub Container Registry
+      run: |
+          # Tag the Qdrant image for GitHub Container Registry
+          docker tag qdrant/qdrant ghcr.io/${{ github.repository_owner }}/qdrant:latest
+          # Push the Qdrant image to GitHub Container Registry
+          docker push ghcr.io/${{ github.repository_owner }}/qdrant:latest
+
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v1
       with:
