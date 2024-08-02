@@ -142,11 +142,7 @@ resource "azurerm_container_group" "qdrant_container" {
       QDRANT__SERVICE__WEBSERVER__PORT = "6333"
     }
   }
-  
 
-  image_registry_credential {
-      server   = "ghcr.io"
-    }
 
   tags = {
     environment = "testing"
