@@ -30,5 +30,5 @@ output "fqdn" {
 }
 
 output "app_url" {
-  value = azurerm_linux_web_app.react_frontend.default_site_hostname
+  value = azurerm_linux_web_app.react_frontend.name
 }

@@ -148,6 +148,7 @@ resource "azurerm_container_group" "qdrant_container" {
 }
 
 # React Frontend Web App
+# Info zu Connection: Hier kann man natürlich auch ein ConnectionString angeben, wie du es auch schon bei der NODE App gemacht hast.
 resource "azurerm_linux_web_app" "react_frontend" {
   name                = "react-frontend-${random_pet.name.id}"
   location            = azurerm_resource_group.main.location
