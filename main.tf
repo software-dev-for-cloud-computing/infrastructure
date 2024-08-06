@@ -118,7 +118,6 @@ resource "azurerm_storage_blob" "blob_fastAPI" {
 
 
 # Qdrant Container APP
-# Infos zu Connection: Die Containergruppe kann eine öffentliche IP haben, die dann über fqdn Attribut abgerufen werden kann. Wäre maybe eine Möglichkeit?
 
 resource "azurerm_container_group" "qdrant_container" {
   name                = "qdrant-${random_pet.name.id}"
@@ -132,12 +131,56 @@ resource "azurerm_container_group" "qdrant_container" {
     image  = "ghcr.io/software-dev-for-cloud-computing/qdrant:latest"
     cpu    = "0.5"
     memory = "1.5"
-  
-    ports {
-      port     = 6333
-      protocol = "TCP"
+
+    environment_variables = {
+      QDRANT_PORT = "6333"
+      VECTOR_STORE_COLLECTION = "CoStudy"
+      VECTOR_STORE_DIMENSION = "1536"
+      LLM_MODEL= "gpt-4o-mini"
+      LLM_DEFAULT_TEMP= 0.0
+      LLL_MIN_TEMP= 0.0
+      LLM_MAX_TEMP= 1.0
+      EMBEDDING_MODEL= "text-embedding-3-small"
+      LLM_DEFAULT_TOKEN_LIMIT= 200
+      LLM_MIN_TOKEN_LIMIT= 1
+      LLM_MAX_TOKEN_LIMIT= 1024
+      MIN_LENGTH_CONTEXT_MESSAGE= 1
+      MAX_LENGTH_CONTEXT_MESSAGE= 10240
+      MAX_K_RESULTS= 5
     }
   }
+
+  container {
+    name = "react"
+    image = "ghcr.io/software-dev-for-cloud-computing/react-app:latest"
+    cpu = "0.5"
+    memory = "1.5"
+
+    ports {
+      port = 443
+      protocol = "TCP"
+    }
+    environment_variables = {
+      REACT_APP_BACKEND_URL = azurerm_cosmosdb_account.cosmos_account.endpoint  # Node App hier?
+    }
+  }
+
+  container {
+    name = "fastapi"
+    image = "ghcr.io/software-dev-for-cloud-computing/fastapi-app:latest"
+    cpu = "0.5"
+    memory = "1.5"
+
+    ports {
+      port = 8000
+      protocol = "TCP"
+    }
+
+    environment_variables = {
+      UVICORN_PORT = "8000"
+    }
+  }
+
   tags = {
     environment = "testing"
   }
