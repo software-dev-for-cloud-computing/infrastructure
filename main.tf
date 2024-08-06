@@ -209,3 +209,4 @@ resource "azurerm_linux_web_app" "fastapi_app" {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
     PORT                                = "8000"  # FastAPI standardmäßig auf Port 8000
   }
+}
