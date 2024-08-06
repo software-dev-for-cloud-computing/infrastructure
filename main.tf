@@ -169,7 +169,7 @@ resource "azurerm_container_group" "qdrant_container" {
   }
 
   tags = {
-    environment = "testing"
+    environment = "testings"
   }
 }
 
