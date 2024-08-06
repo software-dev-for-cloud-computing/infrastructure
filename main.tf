@@ -89,34 +89,6 @@ resource "azurerm_linux_web_app" "nodejs_app" {
 }
 
 
-# Blob storage for FASTAPI
-
-# Storage account
-resource "azurerm_storage_account" "account" {
-  name                     = "storehdmtest3"
-  resource_group_name      = azurerm_resource_group.main.name
-  location                 = azurerm_resource_group.main.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-}
-
-#Storage container
-resource "azurerm_storage_container" "container" {
-  name                  = "1256hdmtest2"
-  storage_account_name  = azurerm_storage_account.account.name
-  container_access_type = "private"
-}
-
-# Blob
-# source = "path/to/local/file.txt" - path to the file that you want to upload - https://registry.terraform.io/providers/tfproviders/azurerm/latest/docs/data-sources/storage_blob
-resource "azurerm_storage_blob" "blob_fastAPI" {
-  name                   = "FASTAPI1myfile.txt"
-  storage_account_name   = azurerm_storage_account.account.name
-  storage_container_name = azurerm_storage_container.container.name
-  type                   = "Block"
-}
-
-
 # Qdrant Container APP
 
 resource "azurerm_container_group" "qdrant_container" {
