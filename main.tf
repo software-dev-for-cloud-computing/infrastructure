@@ -104,6 +104,11 @@ resource "azurerm_container_group" "qdrant_container" {
     cpu    = "0.5"
     memory = "1.5"
 
+    ports {
+      port     = 6333
+      protocol = "TCP"
+    }
+
     environment_variables = {
       QDRANT_PORT = "6333"
       VECTOR_STORE_COLLECTION = "CoStudy"
@@ -176,26 +181,4 @@ resource "azurerm_linux_web_app" "react_frontend" {
     health_check_path = "/"
   }
   
-}
-resource "azurerm_linux_web_app" "fastapi_app" {
-  name                = "fastapi-app-${random_pet.name.id}"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  service_plan_id     = azurerm_service_plan.app_service_plan.id
-
-  site_config {
-    always_on = true
-
-    application_stack {
-      docker_image_name   = "ghcr.io/software-dev-for-cloud-computing/fastapi-app:latest"
-      docker_registry_url = "https://ghcr.io"
-    }
-
-    health_check_path = "/"
-  }
-
-  app_settings = {
-    WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
-    PORT                                = "8000"  # FastAPI standardmäßig auf Port 8000
-  }
 }
