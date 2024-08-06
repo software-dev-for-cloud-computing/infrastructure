@@ -133,13 +133,33 @@ resource "azurerm_container_group" "qdrant_container" {
     cpu = "0.5"
     memory = "1.5"
 
-    ports {
+
+    ports  {
       port = 443
       protocol = "TCP"
+
     }
     environment_variables = {
       REACT_APP_BACKEND_URL = azurerm_cosmosdb_account.cosmos_account.endpoint  # Node App hier?
     }
+
+  }
+
+  container {
+    name = "fastapi"
+    image = "ghcr.io/software-dev-for-cloud-computing/fastapi-app:latest"
+    cpu = "0.5"
+    memory = "1.5"
+
+    ports {
+      port     = 80
+      protocol = "TCP"
+    }
+
+    environment_variables = {
+      UVICORN_PORT = "8000"
+    }
+
   }
 
   tags = {
