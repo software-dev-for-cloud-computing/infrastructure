@@ -152,9 +152,15 @@ resource "azurerm_container_group" "qdrant_container" {
     memory = "1.5"
 
     ports {
+      port     = 8000
+      protocol = "TCP"
+    }
+
+    ports {
       port     = 80
       protocol = "TCP"
     }
+    
 
     environment_variables = {
       UVICORN_PORT = "8000"
