@@ -139,6 +139,7 @@ resource "azurerm_container_group" "qdrant_container" {
     environment_variables = {
       MONGODB_URI = azurerm_cosmosdb_account.cosmos_account.connection_strings[0]
       NODE_ENV = "production"
+      PORT = "80"
     }
   }
 
@@ -169,11 +170,6 @@ resource "azurerm_container_group" "qdrant_container" {
       protocol = "TCP"
     }
 
-    ports {
-      port     = 80
-      protocol = "TCP"
-    }
-    
     environment_variables = {
       UVICORN_PORT = "8000"
     }
