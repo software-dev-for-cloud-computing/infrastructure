@@ -139,7 +139,7 @@ resource "azurerm_container_group" "qdrant_container" {
     environment_variables = {
       MONGODB_URI = azurerm_cosmosdb_account.cosmos_account.connection_strings[0]
       NODE_ENV = "production"
-      PORT = "80"
+      PORT = "3002"
     }
   }
 
@@ -152,8 +152,8 @@ resource "azurerm_container_group" "qdrant_container" {
     ports  {
       port = 443
       protocol = "TCP"
-
     }
+
     environment_variables = {
       REACT_APP_BACKEND_URL = azurerm_cosmosdb_account.cosmos_account.endpoint  # Node App hier?
     }
