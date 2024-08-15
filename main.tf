@@ -150,11 +150,13 @@ resource "azurerm_container_group" "qdrant_container" {
     memory = "1.5"
 
     ports  {
-      port = 443
+      port = 80
       protocol = "TCP"
     }
 
-   
+    environment_variables = {
+      REACT_APP_API_URL = "http://localhost:3000/api"
+    }
   }
 
   container {
