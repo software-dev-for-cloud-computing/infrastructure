@@ -155,7 +155,7 @@ resource "azurerm_container_group" "qdrant_container" {
     }
 
     environment_variables = {
-      REACT_APP_API_URL = "http://localhost:3000/api"
+      REACT_APP_API_URL = "http://localhost:3000"
     }
   }
 
