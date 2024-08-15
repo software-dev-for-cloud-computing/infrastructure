@@ -132,7 +132,7 @@ resource "azurerm_container_group" "main_container" {
     memory = "1.5"
 
     ports {
-      port = 3000
+      port = 3005
       protocol = "TCP"
     }
 
@@ -158,7 +158,7 @@ resource "azurerm_container_group" "main_container" {
     }
 
     environment_variables = {
-      REACT_APP_API_URL = "http://127.0.0.1:3000"
+      REACT_APP_API_URL = "http://localhost:3005"
     }
   }
 
