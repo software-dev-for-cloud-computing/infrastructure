@@ -19,7 +19,3 @@ output "cosmosdb_password" {
 output "cosmosdb_database_name" {
   value = azurerm_cosmosdb_mongo_database.mongo_database.name
 }
-
-output "ip_adress_qdrant" {
-  value = azurerm_container_group.qdrant_container.ip_address
-}

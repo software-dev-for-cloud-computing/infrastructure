@@ -88,8 +88,8 @@ resource "azurerm_cosmosdb_mongo_collection" "mongo_collection" {
 #   }
 # }
 
-# Qdrant Container APP
-resource "azurerm_container_group" "qdrant_container" {
+
+resource "azurerm_container_group" "main_container" {
   name                = "qdrant-${random_pet.name.id}"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
@@ -155,7 +155,7 @@ resource "azurerm_container_group" "qdrant_container" {
     }
 
     environment_variables = {
-      REACT_APP_API_URL = "http://localhost:3000"
+      REACT_APP_API_URL = "http://nodejs:3000"
     }
   }
 
