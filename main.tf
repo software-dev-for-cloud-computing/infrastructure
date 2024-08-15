@@ -132,7 +132,7 @@ resource "azurerm_container_group" "qdrant_container" {
     memory = "1.5"
 
     ports {
-      port = 3001
+      port = 3000
       protocol = "TCP"
     }
 
