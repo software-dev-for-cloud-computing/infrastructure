@@ -63,63 +63,32 @@ resource "azurerm_cosmosdb_mongo_collection" "mongo_collection" {
   }
 }
 
-resource "azurerm_linux_web_app" "nodejs_app" {
-  name                = "nodejs-app-${random_pet.name.id}"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  service_plan_id     = azurerm_service_plan.app_service_plan.id
+# resource "azurerm_linux_web_app" "nodejs_app" {
+#   name                = "nodejs-app-${random_pet.name.id}"
+#   location            = azurerm_resource_group.main.location
+#   resource_group_name = azurerm_resource_group.main.name
+#   service_plan_id     = azurerm_service_plan.app_service_plan.id
 
-  site_config {
-    always_on = true
+#   site_config {
+#     always_on = true
 
-    application_stack {
-      docker_image_name   = "ghcr.io/software-dev-for-cloud-computing/node-app:latest"
-      docker_registry_url = "https://ghcr.io"
-    }
+#     application_stack {
+#       docker_image_name   = "ghcr.io/software-dev-for-cloud-computing/node-app:latest"
+#       docker_registry_url = "https://ghcr.io"
+#     }
 
-    health_check_path = "/"
-  }
+#     health_check_path = "/"
+#   }
 
-  app_settings = {
-    WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
-    PORT                                = "80"
-    NODE_ENV                            = "production"
-    MONGODB_URI                         = azurerm_cosmosdb_account.cosmos_account.connection_strings[0]
-  }
-}
-
-
-# Blob storage for FASTAPI
-
-# Storage account
-resource "azurerm_storage_account" "account" {
-  name                     = "storehdmtest3"
-  resource_group_name      = azurerm_resource_group.main.name
-  location                 = azurerm_resource_group.main.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-}
-
-#Storage container
-resource "azurerm_storage_container" "container" {
-  name                  = "1256hdmtest2"
-  storage_account_name  = azurerm_storage_account.account.name
-  container_access_type = "private"
-}
-
-# Blob
-# source = "path/to/local/file.txt" - path to the file that you want to upload - https://registry.terraform.io/providers/tfproviders/azurerm/latest/docs/data-sources/storage_blob
-resource "azurerm_storage_blob" "blob_fastAPI" {
-  name                   = "FASTAPI1myfile.txt"
-  storage_account_name   = azurerm_storage_account.account.name
-  storage_container_name = azurerm_storage_container.container.name
-  type                   = "Block"
-}
-
+#   app_settings = {
+#     WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
+#     PORT                                = "80"
+#     NODE_ENV                            = "production"
+#     MONGODB_URI                         = azurerm_cosmosdb_account.cosmos_account.connection_strings[0]
+#   }
+# }
 
 # Qdrant Container APP
-# Infos zu Connection: Die Containergruppe kann eine öffentliche IP haben, die dann über fqdn Attribut abgerufen werden kann. Wäre maybe eine Möglichkeit?
-
 resource "azurerm_container_group" "qdrant_container" {
   name                = "qdrant-${random_pet.name.id}"
   location            = azurerm_resource_group.main.location
@@ -132,55 +101,81 @@ resource "azurerm_container_group" "qdrant_container" {
     image  = "ghcr.io/software-dev-for-cloud-computing/qdrant:latest"
     cpu    = "0.5"
     memory = "1.5"
-  
+
     ports {
       port     = 6333
       protocol = "TCP"
     }
+
+    environment_variables = {
+      QDRANT_PORT = "6333"
+      VECTOR_STORE_COLLECTION = "CoStudy"
+      VECTOR_STORE_DIMENSION = "1536"
+      LLM_MODEL= "gpt-4o-mini"
+      LLM_DEFAULT_TEMP= 0.0
+      LLL_MIN_TEMP= 0.0
+      LLM_MAX_TEMP= 1.0
+      EMBEDDING_MODEL= "text-embedding-3-small"
+      LLM_DEFAULT_TOKEN_LIMIT= 200
+      LLM_MIN_TOKEN_LIMIT= 1
+      LLM_MAX_TOKEN_LIMIT= 1024
+      MIN_LENGTH_CONTEXT_MESSAGE= 1
+      MAX_LENGTH_CONTEXT_MESSAGE= 10240
+      MAX_K_RESULTS= 5
+    }
+  }
+
+  container  {
+    name = "nodejs"
+    image = "ghcr.io/software-dev-for-cloud-computing/node-app:latest"
+    cpu = "0.5"
+    memory = "1.5"
+
+    ports {
+      port = 3000
+      protocol = "TCP"
+    }
+
+    environment_variables = {
+      MONGODB_URI = azurerm_cosmosdb_account.cosmos_account.connection_strings[0]
+      NODE_ENV = "production"
+      PORT = "3002"
+    }
+  }
+
+  container {
+    name = "react"
+    image = "ghcr.io/software-dev-for-cloud-computing/react-app:latest"
+    cpu = "0.5"
+    memory = "1.5"
+
+    ports  {
+      port = 443
+      protocol = "TCP"
+    }
+
+    environment_variables = {
+      REACT_APP_BACKEND_URL = azurerm_cosmosdb_account.cosmos_account.endpoint  # Node App hier?
+    }
+  }
+
+  container {
+    name = "fastapi"
+    image = "ghcr.io/software-dev-for-cloud-computing/fastapi-app:latest"
+    cpu = "0.5"
+    memory = "1.5"
+
+    ports {
+      port     = 8000
+      protocol = "TCP"
+    }
+
+    environment_variables = {
+      UVICORN_PORT = "8000"
+    }
   }
   tags = {
-    environment = "testing"
+    environment = "testings"
   }
 }
 
-# React Frontend Web App
-
-resource "azurerm_linux_web_app" "react_frontend" {
-  name                = "react-frontend-${random_pet.name.id}"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  service_plan_id     = azurerm_service_plan.app_service_plan.id
-  
-  site_config {
-    always_on = true
-
-    application_stack {
-      docker_image_name   = "ghcr.io/software-dev-for-cloud-computing/react-app:latest"
-      docker_registry_url = "https://ghcr.io"
-    }
-    health_check_path = "/"
-  }
-  
-}
-resource "azurerm_linux_web_app" "fastapi_app" {
-  name                = "fastapi-app-${random_pet.name.id}"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  service_plan_id     = azurerm_service_plan.app_service_plan.id
-
-  site_config {
-    always_on = true
-
-    application_stack {
-      docker_image_name   = "ghcr.io/software-dev-for-cloud-computing/fastapi-app:latest"
-      docker_registry_url = "https://ghcr.io"
-    }
-
-    health_check_path = "/"
-  }
-
-  app_settings = {
-    WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
-    PORT                                = "8000"  # FastAPI standardmäßig auf Port 8000
-  }
-}
