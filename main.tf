@@ -139,7 +139,7 @@ resource "azurerm_container_group" "main_container" {
     environment_variables = {
       MONGODB_URI = azurerm_cosmosdb_account.cosmos_account.connection_strings[0]
       NODE_ENV = "production"
-      PORT = "3002"
+      PORT = "3000"
       CORS_ORIGIN = "http://localhost:3000"
       AI_SERVICE_URL= "http://127.0.0.1:8000/api/v1/qa"
       DOCUMENT_API_URL= "http://127.0.0.1:8000/api/v1/document"
