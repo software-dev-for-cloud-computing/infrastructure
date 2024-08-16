@@ -141,8 +141,8 @@ resource "azurerm_container_group" "main_container" {
       NODE_ENV = "production"
       PORT = "3000"
       CORS_ORIGIN = "http://react:80" 
-      AI_SERVICE_URL = "http://127.0.0.1:8000/api/v1/qa"  
-      DOCUMENT_API_URL = "http://127.0.0.1:8000/api/v1/document"  
+      AI_SERVICE_URL = "http://fastapi:8000/api/v1/qa"  
+      DOCUMENT_API_URL = "http://fastapi:8000/api/v1/document"  
     }
   }
 
