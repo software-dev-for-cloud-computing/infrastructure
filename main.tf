@@ -97,57 +97,86 @@ resource "azurerm_container_group" "main_container" {
   ip_address_type     = "Public"  # kann auch Private oder None sein
   
   container {
-  name = "nodejs"
-  image = "ghcr.io/software-dev-for-cloud-computing/node-app:latest"
-  cpu = "0.5"
-  memory = "1.5"
+    name   = "qdrant"
+    image  = "ghcr.io/software-dev-for-cloud-computing/qdrant:latest"
+    cpu    = "0.5"
+    memory = "1.5"
 
-  ports {
-    port = 3000
-    protocol = "TCP"
+    ports {
+      port     = 6333
+      protocol = "TCP"
+    }
+
+    environment_variables = {
+      QDRANT_PORT = "6333"
+      VECTOR_STORE_COLLECTION = "CoStudy"
+      VECTOR_STORE_DIMENSION = "1536"
+      LLM_MODEL= "gpt-4o-mini"
+      LLM_DEFAULT_TEMP= 0.0
+      LLL_MIN_TEMP= 0.0
+      LLM_MAX_TEMP= 1.0
+      EMBEDDING_MODEL= "text-embedding-3-small"
+      LLM_DEFAULT_TOKEN_LIMIT= 200
+      LLM_MIN_TOKEN_LIMIT= 1
+      LLM_MAX_TOKEN_LIMIT= 1024
+      MIN_LENGTH_CONTEXT_MESSAGE= 1
+      MAX_LENGTH_CONTEXT_MESSAGE= 10240
+      MAX_K_RESULTS= 5
+    }
   }
 
-  environment_variables = {
-    MONGODB_URI = azurerm_cosmosdb_account.cosmos_account.connection_strings[0]
-    NODE_ENV = "production"
-    PORT = "3000"
-    CORS_ORIGIN = "http://react:80"  # Anpassung auf den internen Container-Namen
-    AI_SERVICE_URL = "http://fastapi:8000/api/v1/qa"  # Anpassung auf den internen Container-Namen
-    DOCUMENT_API_URL = "http://fastapi:8000/api/v1/document"  # Anpassung auf den internen Container-Namen
-  }
-}
+  container {
+    name = "nodejs"
+    image = "ghcr.io/software-dev-for-cloud-computing/node-app:latest"
+    cpu = "0.5"
+    memory = "1.5"
 
-container {
-  name = "react"
-  image = "ghcr.io/software-dev-for-cloud-computing/react-app:latest"
-  cpu = "0.5"
-  memory = "1.5"
+    ports {
+      port = 3000
+      protocol = "TCP"
+    }
 
-  ports {
-    port = 80
-    protocol = "TCP"
-  }
-
-  environment_variables = {
-    REACT_APP_API_URL = "http://nodejs:3000"  # Anpassung auf den internen Container-Namen
-  }
-}
-
-container {
-  name = "fastapi"
-  image = "ghcr.io/software-dev-for-cloud-computing/fastapi-app:latest"
-  cpu = "0.5"
-  memory = "1.5"
-
-  ports {
-    port = 8000
-    protocol = "TCP"
+    environment_variables = {
+      MONGODB_URI = azurerm_cosmosdb_account.cosmos_account.connection_strings[0]
+      NODE_ENV = "production"
+      PORT = "3000"
+      CORS_ORIGIN = "http://react:80"  # Anpassung auf den internen Container-Namen
+      AI_SERVICE_URL = "http://fastapi:8000/api/v1/qa"  # Anpassung auf den internen Container-Namen
+      DOCUMENT_API_URL = "http://fastapi:8000/api/v1/document"  # Anpassung auf den internen Container-Namen
+    }
   }
 
-  environment_variables = {
-    UVICORN_PORT = "8000"
+  container {
+    name = "react"
+    image = "ghcr.io/software-dev-for-cloud-computing/react-app:latest"
+    cpu = "0.5"
+    memory = "1.5"
+
+    ports {
+      port = 80
+      protocol = "TCP"
+    }
+
+    environment_variables = {
+      REACT_APP_API_URL = "http://nodejs:3000"  # Anpassung auf den internen Container-Namen
+    }
   }
-}
+
+  container {
+    name = "fastapi"
+    image = "ghcr.io/software-dev-for-cloud-computing/fastapi-app:latest"
+    cpu = "0.5"
+    memory = "1.5"
+
+    ports {
+      port = 8000
+      protocol = "TCP"
+    }
+
+    environment_variables = {
+      UVICORN_PORT = "8000"
+    }
+  }
 }
 
 
