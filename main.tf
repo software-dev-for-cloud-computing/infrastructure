@@ -140,9 +140,9 @@ resource "azurerm_container_group" "main_container" {
       MONGODB_URI = azurerm_cosmosdb_account.cosmos_account.connection_strings[0]
       NODE_ENV = "production"
       PORT = "3000"
-      CORS_ORIGIN = "http://react:80"  # Anpassung auf den internen Container-Namen
-      AI_SERVICE_URL = "http://fastapi:8000/api/v1/qa"  # Anpassung auf den internen Container-Namen
-      DOCUMENT_API_URL = "http://fastapi:8000/api/v1/document"  # Anpassung auf den internen Container-Namen
+      CORS_ORIGIN = "http://react:80" 
+      AI_SERVICE_URL = "http://127.0.0.1:8000/api/v1/qa"  
+      DOCUMENT_API_URL = "http://127.0.0.1:8000/api/v1/document"  
     }
   }
 
@@ -158,7 +158,7 @@ resource "azurerm_container_group" "main_container" {
     }
 
     environment_variables = {
-      REACT_APP_API_URL = "http://nodejs:3000"  # Anpassung auf den internen Container-Namen
+      REACT_APP_API_URL = "http://nodejs:3000"  
     }
   }
 
