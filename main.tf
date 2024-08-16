@@ -130,7 +130,6 @@ container {
 
   environment_variables = {
     REACT_APP_API_URL = "http://nodejs:3000"  # Anpassung auf den internen Container-Namen
-    PORT = "3005"
   }
 }
 
@@ -148,6 +147,7 @@ container {
   environment_variables = {
     UVICORN_PORT = "8000"
   }
+}
 }
 
 
