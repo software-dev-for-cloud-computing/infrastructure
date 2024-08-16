@@ -63,30 +63,7 @@ resource "azurerm_cosmosdb_mongo_collection" "mongo_collection" {
   }
 }
 
-# resource "azurerm_linux_web_app" "nodejs_app" {
-#   name                = "nodejs-app-${random_pet.name.id}"
-#   location            = azurerm_resource_group.main.location
-#   resource_group_name = azurerm_resource_group.main.name
-#   service_plan_id     = azurerm_service_plan.app_service_plan.id
 
-#   site_config {
-#     always_on = true
-
-#     application_stack {
-#       docker_image_name   = "ghcr.io/software-dev-for-cloud-computing/node-app:latest"
-#       docker_registry_url = "https://ghcr.io"
-#     }
-
-#     health_check_path = "/"
-#   }
-
-#   app_settings = {
-#     WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
-#     PORT                                = "80"
-#     NODE_ENV                            = "production"
-#     MONGODB_URI                         = azurerm_cosmosdb_account.cosmos_account.connection_strings[0]
-#   }
-# }
 
 # Qdrant Container APP
 resource "azurerm_container_group" "qdrant_container" {
@@ -140,22 +117,9 @@ resource "azurerm_container_group" "qdrant_container" {
       MONGODB_URI = azurerm_cosmosdb_account.cosmos_account.connection_strings[0]
       NODE_ENV = "production"
       PORT = "3002"
-    }
-  }
-
-  container {
-    name = "react"
-    image = "ghcr.io/software-dev-for-cloud-computing/react-app:latest"
-    cpu = "0.5"
-    memory = "1.5"
-
-    ports  {
-      port = 443
-      protocol = "TCP"
-    }
-
-    environment_variables = {
-      REACT_APP_BACKEND_URL = azurerm_cosmosdb_account.cosmos_account.endpoint  # Node App hier?
+      AI_SERVICE_URL="http://127.0.0.1:8000/api/v1/qa"
+      DOCUMENT_API_URL="http://127.0.0.1:8000/api/v1/document"
+      CORS_ORIGIN="${azurerm_linux_web_app.react-frontend.default_hostname}"
     }
   }
 
@@ -179,3 +143,51 @@ resource "azurerm_container_group" "qdrant_container" {
   }
 }
 
+resource "azurem_linux_web_app" "react-frontend" {
+  name                = "react-frontend-${random_pet.name.id}"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  app_service_plan_id = azurerm_service_plan.app_service_plan.id
+
+  site_config {
+    always_on = true
+
+    application_stack {
+      docker_image_name   = "ghcr.io/software-dev-for-cloud-computing/react-app:latest"
+      docker_registry_url = "https://ghcr.io"
+    }
+
+    health_check_path = "/"
+  }
+
+  app_settings {
+    WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
+    PORT                                = "80"
+    REACT_APP_API_URL                  = "http://${azurerm_container_group.qdrant_container.ip_address}:3000"
+  }
+}
+
+# resource "azurerm_linux_web_app" "nodejs_app" {
+#   name                = "nodejs-app-${random_pet.name.id}"
+#   location            = azurerm_resource_group.main.location
+#   resource_group_name = azurerm_resource_group.main.name
+#   service_plan_id     = azurerm_service_plan.app_service_plan.id
+
+#   site_config {
+#     always_on = true
+
+#     application_stack {
+#       docker_image_name   = "ghcr.io/software-dev-for-cloud-computing/node-app:latest"
+#       docker_registry_url = "https://ghcr.io"
+#     }
+
+#     health_check_path = "/"
+#   }
+
+#   app_settings = {
+#     WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
+#     PORT                                = "80"
+#     NODE_ENV                            = "production"
+#     MONGODB_URI                         = azurerm_cosmosdb_account.cosmos_account.connection_strings[0]
+#   }
+# }
