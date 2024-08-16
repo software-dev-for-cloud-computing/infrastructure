@@ -153,7 +153,7 @@ resource "azurerm_container_group" "main_container" {
     memory = "1.5"
 
     ports {
-      port = 80
+      port = 3001
       protocol = "TCP"
     }
 
