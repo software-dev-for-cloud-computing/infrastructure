@@ -95,7 +95,7 @@ resource "azurerm_container_group" "main_container" {
   resource_group_name = azurerm_resource_group.main.name
   os_type             = "Linux"
   ip_address_type     = "Public"  # kann auch Private oder None sein
-  
+
   container {
     name   = "qdrant"
     image  = "ghcr.io/software-dev-for-cloud-computing/qdrant:latest"
@@ -140,7 +140,7 @@ resource "azurerm_container_group" "main_container" {
       MONGODB_URI = azurerm_cosmosdb_account.cosmos_account.connection_strings[0]
       NODE_ENV = "production"
       PORT = "3000"
-      CORS_ORIGIN = "http://${azurerm_container_group.main_container.ip_address}:80"
+      CORS_ORIGIN = "http://react:80"
       AI_SERVICE_URL = "http://fastapi:8000/api/v1/qa"
       DOCUMENT_API_URL = "http://fastapi:8000/api/v1/document"
     }
@@ -158,7 +158,7 @@ resource "azurerm_container_group" "main_container" {
     }
 
     environment_variables = {
-      REACT_APP_API_URL = "http://${azurerm_container_group.main_container.ip_address}:3000"
+      REACT_APP_API_URL = "http://nodejs:3000"
     }
   }
 
