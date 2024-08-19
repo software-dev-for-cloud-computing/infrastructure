@@ -21,13 +21,13 @@ resource "azurerm_resource_group" "main" {
   location = "Germany West Central"
 }
 
-resource "azurerm_service_plan" "app_service_plan" {
-  name                = "myAppServicePlan-${random_pet.name.id}"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  os_type             = "Linux"
-  sku_name            = "B1"
-}
+#resource "azurerm_service_plan" "app_service_plan" {
+ # name                = "myAppServicePlan-${random_pet.name.id}"
+ # location            = azurerm_resource_group.main.location
+ # resource_group_name = azurerm_resource_group.main.name
+ # os_type             = "Linux"
+ # sku_name            = "B1"
+#}
 
 resource "azurerm_cosmosdb_account" "cosmos_account" {
   name                = "cosmos-db-${random_pet.name.id}"
