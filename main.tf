@@ -218,14 +218,14 @@ resource "azurerm_public_ip" "container_group_public_ip" {
   }
 }
 
-resource "azurerm_container_group_ip_address" "public" {
+/*resource "azurerm_container_group_ip_address" "public" {
   container_group_id = azurerm_container_group.main_container.id
   ip_address         = azurerm_public_ip.container_group_public_ip.ip_address
   ports {
     port     = 80
     protocol = "TCP"
-  } 
-}
+  }
+}*/
 
 
 resource "azurerm_container_group" "main_container" {
@@ -233,7 +233,7 @@ resource "azurerm_container_group" "main_container" {
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   os_type             = "Linux"
-  ip_address_type     = "Private"  # kann auch Private oder None sein
+  ip_address_type     = "Public"  # kann auch Private oder None sein
 
   subnet_ids = [
     azurerm_subnet.subnet.id
