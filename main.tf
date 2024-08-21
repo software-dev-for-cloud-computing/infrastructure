@@ -185,13 +185,50 @@ resource "azurerm_container_group" "main_container" {
 
  */
 
+resource "azurerm_virtual_network" "v_net" {
+  name                = "virtualNetwork-${random_pet.name.id}"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  address_space       = ["10.0.0.0/16"]
+  #dns_servers         = ["10.0.0.4", "10.0.0.5"]
+}
+
+resource "azurerm_subnet" "subnet" {
+  name                 = "subnet-${random_pet.name.id}"
+  resource_group_name  = azurerm_resource_group.main.name
+  virtual_network_name = azurerm_virtual_network.v_net.name
+  address_prefixes     = ["10.0.1.0/24"]
+}
+
+resource "azurerm_network_interface" "network_interface" {
+  name                = "networkInterface-${random_pet.name.id}"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.subnet.id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
 
 resource "azurerm_container_group" "main_container" {
   name                = "qdrant-${random_pet.name.id}"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   os_type             = "Linux"
-  ip_address_type     = "Public"  # kann auch Private oder None sein
+  ip_address_type     = "Private"  # kann auch Private oder None sein
+
+   subnet_ids = [
+    azurerm_subnet.subnet.id
+  ]
+
+  dns_config {
+    nameservers = [
+      "168.63.129.16", # Azure's internal DNS resolver
+    ]
+  }
 
   container {
     name   = "qdrant"
@@ -255,7 +292,7 @@ resource "azurerm_container_group" "main_container" {
     }
 
     environment_variables = {
-      REACT_APP_API_URL = "http://nodejs:3011"
+      REACT_APP_API_URL = "http://nodejs:3000"
     }
 
   }
