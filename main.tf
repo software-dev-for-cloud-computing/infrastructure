@@ -190,7 +190,6 @@ resource "azurerm_virtual_network" "v_net" {
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   address_space       = ["10.0.0.0/16"]
-  #dns_servers         = ["10.0.0.4", "10.0.0.5"]
 }
 
 resource "azurerm_subnet" "subnet" {
@@ -204,21 +203,28 @@ resource "azurerm_subnet" "subnet" {
 
     service_delegation {
       name    = "Microsoft.ContainerInstance/containerGroups"
-      # actions = ["Microsoft.Network/virtualNetworks/subnets/join/action", "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action"]
     }
   }
 }
 
-resource "azurerm_network_interface" "network_interface" {
-  name                = "networkInterface-${random_pet.name.id}"
-  location            = azurerm_resource_group.main.location
+resource "azurerm_public_ip" "container_group_public_ip" {
+  name                = "PublicI-${random_pet.name.id}"
   resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  allocation_method   = "Static"
 
-  ip_configuration {
-    name                          = "internal"
-    subnet_id                     = azurerm_subnet.subnet.id
-    private_ip_address_allocation = "Dynamic"
+  tags = {
+    environment = "Production"
   }
+}
+
+resource "azurerm_container_group_ip_address" "public" {
+  container_group_id = azurerm_container_group.main_container.id
+  ip_address         = azurerm_public_ip.container_group_public_ip.ip_address
+  ports {
+    port     = 80
+    protocol = "TCP"
+  } 
 }
 
 
@@ -229,14 +235,19 @@ resource "azurerm_container_group" "main_container" {
   os_type             = "Linux"
   ip_address_type     = "Private"  # kann auch Private oder None sein
 
-   subnet_ids = [
+  subnet_ids = [
     azurerm_subnet.subnet.id
   ]
 
   dns_config {
     nameservers = [
-      "168.63.129.16", # Azure's internal DNS resolver
+      "168.63.129.16",
     ]
+  }
+
+  exposed_port {
+    port     = 80
+    protocol = "TCP"
   }
 
   container {
