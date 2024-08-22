@@ -112,8 +112,8 @@ resource "azurerm_container_group" "main_container" {
       NODE_ENV         = "production"
       PORT             = "3000"
       CORS_ORIGIN      = "*"
-      AI_SERVICE_URL   = "http://fastapi:8000/api/v1/qa"
-      DOCUMENT_API_URL = "http://fastapi:8000/api/v1/document"
+      AI_SERVICE_URL   = "http://rag-ss-dev4coud-hdm-stuttgart-2024:8000/api/v1/qa"
+      DOCUMENT_API_URL = "http://rag-ss-dev4coud-hdm-stuttgart-2024:8000/api/v1/document"
     }
   }
 
@@ -151,12 +151,22 @@ resource "azurerm_container_group" "main_container" {
   }
 
   exposed_port {
-    port     = 80   # React
+    port     = 80
     protocol = "TCP"
   }
 
   exposed_port{
-    port     = 3000 # Node.js
+    port     = 3000
+    protocol = "TCP"
+  }
+
+  exposed_port {
+    port     = 6333
+    protocol = "TCP"
+  }
+
+  exposed_port{
+    port     = 8000
     protocol = "TCP"
   }
 
