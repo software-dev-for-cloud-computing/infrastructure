@@ -96,7 +96,8 @@ resource "azurerm_container_group" "main_container" {
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   os_type             = "Linux"
-  ip_address_type     = "Public"
+  ip_address_type   
+     = "Public"
 
   dns_name_label = "main-container-hdm-stuttgart-2024"
 
@@ -141,7 +142,7 @@ resource "azurerm_container_group" "main_container" {
     }
 
     environment_variables = {
-      MONGODB_URI = azurerm_cosmosdb_account.cosmos_account.connection_strings[0]
+      MONGODB_URI = azurerm_cosmosdb_account.cosmos_account.primary_connection_string 
       NODE_ENV = "production"
       PORT = "3000"
       CORS_ORIGIN = "*"
@@ -162,7 +163,7 @@ resource "azurerm_container_group" "main_container" {
     }
 
     environment_variables = {
-      REACT_APP_API_URL = "http://localhost:3000"
+      REACT_APP_API_URL = "http://main-container-hdm-stuttgart-2024.germanywestcentral.azurecontainer.io:3000"
     }
 
   }
@@ -181,5 +182,16 @@ resource "azurerm_container_group" "main_container" {
     environment_variables = {
       UVICORN_PORT = "8000"
     }
+  }
+
+  # Ports für die Containergruppe veröffentlichen
+  port {
+    port     = 80   # React
+    protocol = "TCP"
+  }
+
+  port {
+    port     = 3000 # Node.js
+    protocol = "TCP"
   }
 }
