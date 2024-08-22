@@ -90,13 +90,15 @@ resource "azurerm_cosmosdb_mongo_collection" "mongo_collection" {
 #   }
 # }
 
-/*
+
 resource "azurerm_container_group" "main_container" {
   name                = "qdrant-${random_pet.name.id}"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   os_type             = "Linux"
-  ip_address_type     = "Public"  # kann auch Private oder None sein
+  ip_address_type     = "public"
+
+  dns_name_label = "main-container-hdm-stuttgart-2024"
 
   container {
     name   = "qdrant"
@@ -181,157 +183,3 @@ resource "azurerm_container_group" "main_container" {
     }
   }
 }
-
-
- */
-
-resource "azurerm_virtual_network" "v_net" {
-  name                = "virtualNetwork-${random_pet.name.id}"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  address_space       = ["10.0.0.0/16"]
-}
-
-resource "azurerm_subnet" "subnet" {
-  name                 = "subnet-${random_pet.name.id}"
-  resource_group_name  = azurerm_resource_group.main.name
-  virtual_network_name = azurerm_virtual_network.v_net.name
-  address_prefixes     = ["10.0.1.0/24"]
-
-  delegation {
-    name = "delegation"
-
-    service_delegation {
-      name    = "Microsoft.ContainerInstance/containerGroups"
-    }
-  }
-}
-
-resource "azurerm_public_ip" "container_group_public_ip" {
-  name                = "PublicI-${random_pet.name.id}"
-  resource_group_name = azurerm_resource_group.main.name
-  location            = azurerm_resource_group.main.location
-  allocation_method   = "Static"
-
-  tags = {
-    environment = "Production"
-  }
-}
-
-/*resource "azurerm_container_group_ip_address" "public" {
-  container_group_id = azurerm_container_group.main_container.id
-  ip_address         = azurerm_public_ip.container_group_public_ip.ip_address
-  ports {
-    port     = 80
-    protocol = "TCP"
-  }
-}*/
-
-
-resource "azurerm_container_group" "main_container" {
-  name                = "qdrant-${random_pet.name.id}"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  os_type             = "Linux"
-  ip_address_type     = "Public"  # kann auch Private oder None sein
-
-  subnet_ids = [
-    azurerm_subnet.subnet.id
-  ]
-
-  dns_config {
-    nameservers = [
-      "168.63.129.16",
-    ]
-  }
-
-  exposed_port {
-    port     = 80
-    protocol = "TCP"
-  }
-
-  container {
-    name   = "qdrant"
-    image  = "ghcr.io/software-dev-for-cloud-computing/qdrant:latest"
-    cpu    = "0.5"
-    memory = "1.5"
-
-    ports {
-      port     = 6333
-      protocol = "TCP"
-    }
-
-    environment_variables = {
-      QDRANT_PORT = "6333"
-      VECTOR_STORE_COLLECTION = "CoStudy"
-      VECTOR_STORE_DIMENSION = "1536"
-      LLM_MODEL= "gpt-4o-mini"
-      LLM_DEFAULT_TEMP= 0.0
-      LLL_MIN_TEMP= 0.0
-      LLM_MAX_TEMP= 1.0
-      EMBEDDING_MODEL= "text-embedding-3-small"
-      LLM_DEFAULT_TOKEN_LIMIT= 200
-      LLM_MIN_TOKEN_LIMIT= 1
-      LLM_MAX_TOKEN_LIMIT= 1024
-      MIN_LENGTH_CONTEXT_MESSAGE= 1
-      MAX_LENGTH_CONTEXT_MESSAGE= 10240
-      MAX_K_RESULTS= 5
-    }
-  }
-
-  container {
-    name = "nodejs"
-    image = "ghcr.io/software-dev-for-cloud-computing/node-app:latest"
-    cpu = "0.5"
-    memory = "1.5"
-
-    ports {
-      port = 3000
-      protocol = "TCP"
-    }
-
-    environment_variables = {
-      MONGODB_URI = azurerm_cosmosdb_account.cosmos_account.connection_strings[0]
-      NODE_ENV = "production"
-      PORT = "3000"
-      CORS_ORIGIN = "*"
-      AI_SERVICE_URL = "http://fastapi:8000/api/v1/qa"
-      DOCUMENT_API_URL = "http://fastapi:8000/api/v1/document"
-    }
-  }
-
-  container {
-    name = "react"
-    image = "ghcr.io/software-dev-for-cloud-computing/react-app:latest"
-    cpu = "0.5"
-    memory = "1.5"
-
-    ports {
-      port = 80
-      protocol = "TCP"
-    }
-
-    environment_variables = {
-      REACT_APP_API_URL = "http://nodejs:3000"
-    }
-
-  }
-
-  container {
-    name = "fastapi"
-    image = "ghcr.io/software-dev-for-cloud-computing/fastapi-app:latest"
-    cpu = "0.5"
-    memory = "1.5"
-
-    ports {
-      port = 8000
-      protocol = "TCP"
-    }
-
-    environment_variables = {
-      UVICORN_PORT = "8000"
-    }
-  }
-}
-
-
