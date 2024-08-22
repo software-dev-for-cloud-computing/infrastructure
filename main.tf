@@ -59,6 +59,18 @@ resource "azurerm_cosmosdb_mongo_collection" "mongo_collection" {
   index {
     keys = ["timestamp"]
   }
+
+  index {
+    keys = ["conversationId", "timestamp"]
+  }
+
+  index {
+    keys = ["userId"] 
+  }
+
+  index {
+    keys = ["created_at"]
+  }
 }
 
 
