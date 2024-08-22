@@ -21,14 +21,6 @@ resource "azurerm_resource_group" "main" {
   location = "Germany West Central"
 }
 
-#resource "azurerm_service_plan" "app_service_plan" {
-# name                = "myAppServicePlan-${random_pet.name.id}"
-# location            = azurerm_resource_group.main.location
-# resource_group_name = azurerm_resource_group.main.name
-# os_type             = "Linux"
-# sku_name            = "B1"
-#}
-
 resource "azurerm_cosmosdb_account" "cosmos_account" {
   name                = "cosmos-db-${random_pet.name.id}"
   location            = azurerm_resource_group.main.location
@@ -65,40 +57,15 @@ resource "azurerm_cosmosdb_mongo_collection" "mongo_collection" {
   }
 }
 
-# resource "azurerm_linux_web_app" "nodejs_app" {
-#   name                = "nodejs-app-${random_pet.name.id}"
-#   location            = azurerm_resource_group.main.location
-#   resource_group_name = azurerm_resource_group.main.name
-#   service_plan_id     = azurerm_service_plan.app_service_plan.id
-
-#   site_config {
-#     always_on = true
-
-#     application_stack {
-#       docker_image_name   = "ghcr.io/software-dev-for-cloud-computing/node-app:latest"
-#       docker_registry_url = "https://ghcr.io"
-#     }
-
-#     health_check_path = "/"
-#   }
-
-#   app_settings = {
-#     WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
-#     PORT                                = "80"
-#     NODE_ENV                            = "production"
-#     MONGODB_URI                         = azurerm_cosmosdb_account.cosmos_account.connection_strings[0]
-#   }
-# }
-
 
 resource "azurerm_container_group" "main_container" {
-  name                = "qdrant-${random_pet.name.id}"
+  name                = "rag-ss-dev4coud-${random_pet.name.id}"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   os_type             = "Linux"
   ip_address_type     = "Public"
 
-  dns_name_label = "main-container-hdm-stuttgart-2024"
+  dns_name_label = "rag-ss-dev4coud-hdm-stuttgart-2024"
 
   container {
     name   = "qdrant"
@@ -162,7 +129,7 @@ resource "azurerm_container_group" "main_container" {
     }
 
     environment_variables = {
-      REACT_APP_API_URL = "http://nodejs:3000"
+      REACT_APP_API_URL = "http://rag-ss-dev4coud-hdm-stuttgart-2024:3000"
     }
 
   }
