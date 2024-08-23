@@ -73,12 +73,12 @@ resource "azurerm_container_group" "main_container" {
       protocol = "TCP"
     }
 
-    environment_variables = {
+    /*environment_variables = {
       MONGO_INITDB_ROOT_USERNAME = var.mongodb_username
       MONGO_INITDB_ROOT_PASSWORD = var.mongodb_password
       MONGO_INITDB_DATABASE      = var.mongodb_database
       MONGODB_PORT               = "27017"
-    }
+    }*/
   }
 
 /*
