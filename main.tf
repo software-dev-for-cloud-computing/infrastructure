@@ -64,7 +64,7 @@ resource "azurerm_linux_web_app" "mongodb_app" {
     }
   }
 }
-/*
+
 resource "azurerm_container_group" "main_container" {
   name                = "rag-ss-dev4coud-${random_pet.name.id}"
   location            = azurerm_resource_group.main.location
@@ -72,6 +72,8 @@ resource "azurerm_container_group" "main_container" {
   os_type             = "Linux"
   ip_address_type     = "Public"
   dns_name_label      = "rag-ss-dev4coud-hdm-stuttgart-2024"
+
+  depends_on = [azurerm_linux_web_app.mongodb_app]
 
 
   container {
@@ -103,7 +105,7 @@ resource "azurerm_container_group" "main_container" {
     }
   }
 
-
+/*
   container {
     name   = "mongodb"
     image  = "ghcr.io/software-dev-for-cloud-computing/mongo:6.0.6"
@@ -123,7 +125,7 @@ resource "azurerm_container_group" "main_container" {
       MONGODB_PORT               = "27017"
     }
   }
-
+*/
 
   container {
     name   = "nodejs"
@@ -137,7 +139,8 @@ resource "azurerm_container_group" "main_container" {
     }
 
     environment_variables = {
-      MONGODB_URI      = "mongodb://${var.mongodb_username}:${var.mongodb_password}@localhost:27017/${var.mongodb_database}"
+      #MONGODB_URI      = "mongodb://${var.mongodb_username}:${var.mongodb_password}@localhost:27017/${var.mongodb_database}"
+      MONGODB_URI      = azurerm_linux_web_app.mongodb_app.connection_strings[0].value
       NODE_ENV         = "production"
       PORT             = "3000"
       CORS_ORIGIN      = "*"
@@ -198,4 +201,3 @@ resource "azurerm_container_group" "main_container" {
     protocol = "TCP"
   }
 }
-*/
