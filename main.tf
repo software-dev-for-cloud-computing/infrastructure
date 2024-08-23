@@ -22,6 +22,14 @@ resource "azurerm_resource_group" "main" {
   location = "Germany West Central"
 }
 
+resource "azurerm_service_plan" "app_service_plan" {
+  name                = "my-app-service-plan"  // Wähle einen passenden Namen
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  os_type             = "Linux"
+  sku_name            = "B1"  // Oder einen anderen passenden SKU-Namen, der deine Anforderungen erfüllt
+}
+
 resource "azurerm_linux_web_app" "mongodb_app" {
   name                = "mongodb-app-${random_pet.name.id}"
   location            = azurerm_resource_group.main.location
