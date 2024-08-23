@@ -63,8 +63,8 @@ resource "azurerm_container_group" "main_container" {
 */
   container {
     name   = "mongodb"
-    #image  = "ghcr.io/software-dev-for-cloud-computing/mongo:latest"
-    image  = "mongo:latest"
+    image  = "ghcr.io/software-dev-for-cloud-computing/mongo:6.0.6"
+    #image  = "mongo:latest"
     cpu    = "2"
     memory = "4"
 
@@ -77,6 +77,7 @@ resource "azurerm_container_group" "main_container" {
       MONGO_INITDB_ROOT_USERNAME = var.mongodb_username
       MONGO_INITDB_ROOT_PASSWORD = var.mongodb_password
       MONGO_INITDB_DATABASE      = var.mongodb_database
+      MONGODB_PORT               = "27017"
     }
   }
 
