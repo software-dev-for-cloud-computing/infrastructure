@@ -22,6 +22,41 @@ resource "azurerm_resource_group" "main" {
   location = "Germany West Central"
 }
 
+resource "azurerm_linux_web_app" "mongodb_app" {
+  name                = "mongodb-app-${random_pet.name.id}"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  service_plan_id     = azurerm_service_plan.app_service_plan.id
+
+  site_config {
+    always_on        = true
+
+    application_stack {
+      docker_image_name = "ghcr.io/software-dev-for-cloud-computing/mongo:latest"
+      docker_registry_url = "https://ghcr.io"
+    }
+  }
+
+  app_settings = {
+    WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
+    MONGO_INITDB_ROOT_USERNAME = var.mongodb_username
+    MONGO_INITDB_ROOT_PASSWORD = var.mongodb_password
+    MONGO_INITDB_DATABASE      = var.mongodb_database
+  }
+
+  logs {
+    application_logs {
+      file_system_level = "Verbose"
+    }
+    http_logs {
+      file_system {
+        retention_in_days = 7
+        retention_in_mb   = 35
+      }
+    }
+  }
+}
+/*
 resource "azurerm_container_group" "main_container" {
   name                = "rag-ss-dev4coud-${random_pet.name.id}"
   location            = azurerm_resource_group.main.location
@@ -30,7 +65,7 @@ resource "azurerm_container_group" "main_container" {
   ip_address_type     = "Public"
   dns_name_label      = "rag-ss-dev4coud-hdm-stuttgart-2024"
 
-/*
+
   container {
     name   = "qdrant"
     image  = "ghcr.io/software-dev-for-cloud-computing/qdrant:latest"
@@ -60,7 +95,7 @@ resource "azurerm_container_group" "main_container" {
     }
   }
 
-*/
+
   container {
     name   = "mongodb"
     image  = "ghcr.io/software-dev-for-cloud-computing/mongo:6.0.6"
@@ -73,15 +108,15 @@ resource "azurerm_container_group" "main_container" {
       protocol = "TCP"
     }
 
-    /*environment_variables = {
+    environment_variables = {
       MONGO_INITDB_ROOT_USERNAME = var.mongodb_username
       MONGO_INITDB_ROOT_PASSWORD = var.mongodb_password
       MONGO_INITDB_DATABASE      = var.mongodb_database
       MONGODB_PORT               = "27017"
-    }*/
+    }
   }
 
-/*
+
   container {
     name   = "nodejs"
     image  = "ghcr.io/software-dev-for-cloud-computing/node-app:latest"
@@ -154,5 +189,5 @@ resource "azurerm_container_group" "main_container" {
     port     = 8000
     protocol = "TCP"
   }
-  */
 }
+*/
