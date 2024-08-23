@@ -30,6 +30,7 @@ resource "azurerm_container_group" "main_container" {
   ip_address_type     = "Public"
   dns_name_label      = "rag-ss-dev4coud-hdm-stuttgart-2024"
 
+/*
   container {
     name   = "qdrant"
     image  = "ghcr.io/software-dev-for-cloud-computing/qdrant:latest"
@@ -59,6 +60,7 @@ resource "azurerm_container_group" "main_container" {
     }
   }
 
+*/
   container {
     name   = "mongodb"
     image  = "ghcr.io/software-dev-for-cloud-computing/mongo:latest"
@@ -77,6 +79,7 @@ resource "azurerm_container_group" "main_container" {
     }
   }
 
+/*
   container {
     name   = "nodejs"
     image  = "ghcr.io/software-dev-for-cloud-computing/node-app:latest"
@@ -149,4 +152,5 @@ resource "azurerm_container_group" "main_container" {
     port     = 8000
     protocol = "TCP"
   }
+  */
 }
