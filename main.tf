@@ -135,29 +135,6 @@ resource "azurerm_container_group" "main_container" {
     }
   }
 
-
-  container {
-    name   = "nodejs"
-    image  = "ghcr.io/software-dev-for-cloud-computing/node-app:latest"
-    cpu    = "0.5"
-    memory = "1.5"
-
-    ports {
-      port     = 3000
-      protocol = "TCP"
-    }
-
-    environment_variables = {
-      #MONGODB_URI      = azurerm_cosmosdb_account.cosmos_account.connection_strings[0]
-      MONGODB_URI      = "mongodb://${var.mongodb_username}:${var.mongodb_password}@mongodb:27017/${var.mongodb_database}"
-      NODE_ENV         = "production"
-      PORT             = "3000"
-      CORS_ORIGIN      = "*"
-      AI_SERVICE_URL   = "http://rag-ss-dev4coud-hdm-stuttgart-2024.germanywestcentral.azurecontainer.io:8000/api/v1/qa"
-      DOCUMENT_API_URL = "http://rag-ss-dev4coud-hdm-stuttgart-2024.germanywestcentral.azurecontainer.io:8000/api/v1/document"
-    }
-  }
-
   container {
     name   = "react"
     image  = "ghcr.io/software-dev-for-cloud-computing/react-app:latest"
@@ -188,6 +165,28 @@ resource "azurerm_container_group" "main_container" {
 
     environment_variables = {
       UVICORN_PORT = "8000"
+    }
+  }
+
+  container {
+    name   = "nodejs"
+    image  = "ghcr.io/software-dev-for-cloud-computing/node-app:latest"
+    cpu    = "0.5"
+    memory = "1.5"
+
+    ports {
+      port     = 3000
+      protocol = "TCP"
+    }
+
+    environment_variables = {
+      #MONGODB_URI      = azurerm_cosmosdb_account.cosmos_account.connection_strings[0]
+      MONGODB_URI      = "mongodb://${var.mongodb_username}:${var.mongodb_password}@localhost:27017/${var.mongodb_database}"
+      NODE_ENV         = "production"
+      PORT             = "3000"
+      CORS_ORIGIN      = "*"
+      AI_SERVICE_URL   = "http://rag-ss-dev4coud-hdm-stuttgart-2024.germanywestcentral.azurecontainer.io:8000/api/v1/qa"
+      DOCUMENT_API_URL = "http://rag-ss-dev4coud-hdm-stuttgart-2024.germanywestcentral.azurecontainer.io:8000/api/v1/document"
     }
   }
 
