@@ -1,5 +1,5 @@
 variable "mongodb_database" {
-  default = "mydatabase"
+  default = "dev4cloud"
 }
 
 variable "mongodb_username" {
