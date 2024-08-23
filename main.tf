@@ -64,8 +64,8 @@ resource "azurerm_container_group" "main_container" {
   container {
     name   = "mongodb"
     image  = "ghcr.io/software-dev-for-cloud-computing/mongo:latest"
-    cpu    = "0.5"
-    memory = "1.5"
+    cpu    = "2"
+    memory = "4"
 
     ports {
       port     = 27017
