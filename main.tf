@@ -143,7 +143,7 @@ resource "azurerm_container_group" "main_container" {
     memory = "1.5"
 
     ports {
-      port     = 27017
+      port     = 3000
       protocol = "TCP"
     }
 
@@ -208,6 +208,11 @@ resource "azurerm_container_group" "main_container" {
 
   exposed_port {
     port     = 8000
+    protocol = "TCP"
+  }
+
+  exposed_port {
+    port     = 27017
     protocol = "TCP"
   }
 
