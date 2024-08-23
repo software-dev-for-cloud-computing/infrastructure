@@ -21,7 +21,7 @@ resource "azurerm_resource_group" "main" {
   location = "Germany West Central"
 }
 
-resource "azurerm_cosmosdb_account" "cosmos_account" {
+/*resource "azurerm_cosmosdb_account" "cosmos_account" {
   name                = "cosmos-db-${random_pet.name.id}"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
@@ -73,9 +73,10 @@ resource "azurerm_cosmosdb_mongo_collection" "mongo_collection" {
   }
 
   index {
-  keys = ["conversationId", "created_at"] 
+  keys = ["conversationId", "created_at"]
 }
 }
+*/
 
 
 resource "azurerm_container_group" "main_container" {
@@ -117,18 +118,38 @@ resource "azurerm_container_group" "main_container" {
   }
 
   container {
+    name   = "mongodb"
+    image  = "ghcr.io/software-dev-for-cloud-computing/mongo:latest"
+    cpu    = "0.5"
+    memory = "1.5"
+
+    ports {
+      port     = 27017
+      protocol = "TCP"
+    }
+
+    environment_variables = {
+      MONGO_INITDB_ROOT_USERNAME = var.mongodb_username
+      MONGO_INITDB_ROOT_PASSWORD = var.mongodb_password
+      MONGO_INITDB_DATABASE      = var.mongodb_database
+    }
+  }
+
+
+  container {
     name   = "nodejs"
     image  = "ghcr.io/software-dev-for-cloud-computing/node-app:latest"
     cpu    = "0.5"
     memory = "1.5"
 
     ports {
-      port     = 3000
+      port     = 27017
       protocol = "TCP"
     }
 
     environment_variables = {
-      MONGODB_URI      = azurerm_cosmosdb_account.cosmos_account.connection_strings[0]
+      #MONGODB_URI      = azurerm_cosmosdb_account.cosmos_account.connection_strings[0]
+      MONGODB_URI      = "mongodb://${var.mongodb_username}:${var.mongodb_password}@localhost:27017/${var.mongodb_database}"
       NODE_ENV         = "production"
       PORT             = "3000"
       CORS_ORIGIN      = "*"
@@ -175,7 +196,7 @@ resource "azurerm_container_group" "main_container" {
     protocol = "TCP"
   }
 
-  exposed_port{
+  exposed_port {
     port     = 3000
     protocol = "TCP"
   }
@@ -185,7 +206,7 @@ resource "azurerm_container_group" "main_container" {
     protocol = "TCP"
   }
 
-  exposed_port{
+  exposed_port {
     port     = 8000
     protocol = "TCP"
   }

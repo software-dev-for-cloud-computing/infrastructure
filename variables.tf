@@ -18,3 +18,16 @@ variable "prod_db_name" {
   description = "The name of the production database"
   type        = string
 }
+
+
+variable "mongodb_database" {
+  default = "mydatabase"
+}
+
+variable "mongodb_username" {
+  default = "myuser"
+}
+
+variable "mongodb_password" {
+  default = "your_strong_password"
+}
