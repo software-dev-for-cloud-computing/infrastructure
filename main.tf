@@ -65,12 +65,16 @@ resource "azurerm_cosmosdb_mongo_collection" "mongo_collection" {
   }
 
   index {
-    keys = ["userId"] 
+    keys = ["userId"]
   }
 
   index {
     keys = ["created_at"]
   }
+
+  index {
+  keys = ["conversationId", "created_at"] 
+}
 }
 
 
