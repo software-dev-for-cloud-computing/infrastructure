@@ -75,9 +75,9 @@ resource "azurerm_container_group" "main_container" {
   ip_address_type     = "Public"
   dns_name_label      = "rag-ss-dev4coud-hdm-stuttgart-2024"
 
-  depends_on = [
+  /*depends_on = [
     azurerm_linux_web_app.mongodb_app,
-  ]
+  ]*/
 
 
   /*
