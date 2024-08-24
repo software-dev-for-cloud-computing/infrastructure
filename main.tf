@@ -88,9 +88,9 @@ resource "azurerm_container_group" "main_container" {
 
 
     environment_variables = {
-      MONGO_INITDB_ROOT_USERNAME = var.mongodb_username
-      MONGO_INITDB_ROOT_PASSWORD = var.mongodb_password
-      MONGO_INITDB_DATABASE      = var.mongodb_database
+      MONGO_INITDB_ROOT_USERNAME = "user"
+      MONGO_INITDB_ROOT_PASSWORD = "password"
+      MONGO_INITDB_DATABASE      = "dev4cloud"
       MONGODB_PORT               = "27017"
     }
   }
@@ -140,7 +140,7 @@ resource "azurerm_container_group" "main_container" {
 
     environment_variables = {
       # MONGODB_URI      = "${azurerm_linux_web_app.mongodb_app.connection_string}"
-      MONGODB_URI      = "mongodb://${var.mongodb_username}:${var.mongodb_password}@localhost:27017/${var.mongodb_database}" 
+      MONGODB_URI      = "mongodb://user:password@localhost:27017/dev4cloud" 
       NODE_ENV         = "production"
       PORT             = "3000"
       CORS_ORIGIN      = "*"
