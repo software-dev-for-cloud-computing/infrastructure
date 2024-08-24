@@ -88,10 +88,11 @@ resource "azurerm_container_group" "main_container" {
 
 
     environment_variables = {
-      MONGO_INITDB_ROOT_USERNAME = "user"
-      MONGO_INITDB_ROOT_PASSWORD = "password"
+      #MONGO_INITDB_ROOT_USERNAME = "user"
+      #MONGO_INITDB_ROOT_PASSWORD = "password"
       MONGO_INITDB_DATABASE      = "dev4cloud"
       MONGODB_PORT               = "27017"
+      DISABLE_MONGO_AUTH         = "true" # Dies deaktiviert die Authentifizierung
     }
   }
 
@@ -140,7 +141,7 @@ resource "azurerm_container_group" "main_container" {
 
     environment_variables = {
       # MONGODB_URI      = "${azurerm_linux_web_app.mongodb_app.connection_string}"
-      MONGODB_URI      = "mongodb://user:password@localhost:27017/dev4cloud" 
+      MONGODB_URI      = "mongodb://localhost:27017/dev4cloud" 
       NODE_ENV         = "production"
       PORT             = "3000"
       CORS_ORIGIN      = "*"
