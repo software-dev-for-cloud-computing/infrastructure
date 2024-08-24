@@ -177,10 +177,3 @@ resource "azurerm_container_group" "main_container" {
   }
 
 }
-
-/*
-locals {
-  mongodb_connection_string = azurerm_linux_web_app.mongodb_app.connection_string
-  depends_on = [azurerm_linux_web_app.mongodb_app]
-}
-*/
