@@ -146,7 +146,7 @@ resource "azurerm_container_group" "main_container" {
 
     environment_variables = {
       # MONGODB_URI      = "${azurerm_linux_web_app.mongodb_app.connection_string}"
-      MONGODB_URI      = "mongodb://localhost:27017/${var.mongodb_database}" 
+      MONGODB_URI      = "mongodb://${var.mongodb_username}:${var.mongodb_password}@localhost:27017/${var.mongodb_database}" 
       NODE_ENV         = "production"
       PORT             = "3000"
       CORS_ORIGIN      = "*"
