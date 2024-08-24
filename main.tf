@@ -80,7 +80,7 @@ resource "azurerm_container_group" "main_container" {
   ]*/
 
 
-  /*
+  
   container {
     name   = "qdrant"
     image  = "ghcr.io/software-dev-for-cloud-computing/qdrant:latest"
@@ -109,7 +109,7 @@ resource "azurerm_container_group" "main_container" {
       MAX_K_RESULTS              = "5"
     }
   }
-  */
+  
 
 
   container {
@@ -123,17 +123,16 @@ resource "azurerm_container_group" "main_container" {
       protocol = "TCP"
     }
 
-/*
+
     environment_variables = {
       MONGO_INITDB_ROOT_USERNAME = var.mongodb_username
       MONGO_INITDB_ROOT_PASSWORD = var.mongodb_password
       MONGO_INITDB_DATABASE      = var.mongodb_database
       MONGODB_PORT               = "27017"
     }
-*/
   }
 
-/*
+
   container {
     name   = "nodejs"
     image  = "ghcr.io/software-dev-for-cloud-computing/node-app:latest"
@@ -146,8 +145,8 @@ resource "azurerm_container_group" "main_container" {
     }
 
     environment_variables = {
-     # MONGODB_URI      = "${azurerm_linux_web_app.mongodb_app.connection_string}"
-      MONGODB_URI      = local.mongodb_connection_string
+      # MONGODB_URI      = "${azurerm_linux_web_app.mongodb_app.connection_string}"
+      MONGODB_URI      = "mongodb://mongodb:27017/${var.mongodb_database}" 
       NODE_ENV         = "production"
       PORT             = "3000"
       CORS_ORIGIN      = "*"
@@ -207,7 +206,7 @@ resource "azurerm_container_group" "main_container" {
     port     = 8000
     protocol = "TCP"
   }
-  */
+  
 }
 
 /*
