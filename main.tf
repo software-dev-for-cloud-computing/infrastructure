@@ -30,6 +30,7 @@ resource "azurerm_service_plan" "app_service_plan" {
   sku_name            = "B1"  // Oder einen anderen passenden SKU-Namen, der deine Anforderungen erfüllt
 }
 
+/*
 resource "azurerm_linux_web_app" "mongodb_app" {
   name                = "mongodb-app-${random_pet.name.id}"
   location            = azurerm_resource_group.main.location
@@ -64,6 +65,7 @@ resource "azurerm_linux_web_app" "mongodb_app" {
     }
   }
 }
+*/
 
 resource "azurerm_container_group" "main_container" {
   name                = "rag-ss-dev4coud-${random_pet.name.id}"
@@ -78,6 +80,7 @@ resource "azurerm_container_group" "main_container" {
   ]
 
 
+  /*
   container {
     name   = "qdrant"
     image  = "ghcr.io/software-dev-for-cloud-computing/qdrant:latest"
@@ -106,12 +109,12 @@ resource "azurerm_container_group" "main_container" {
       MAX_K_RESULTS              = "5"
     }
   }
+  */
 
-/*
+
   container {
     name   = "mongodb"
     image  = "ghcr.io/software-dev-for-cloud-computing/mongo:6.0.6"
-    #image  = "mongo:latest"
     cpu    = "2"
     memory = "4"
 
@@ -120,15 +123,17 @@ resource "azurerm_container_group" "main_container" {
       protocol = "TCP"
     }
 
+/*
     environment_variables = {
       MONGO_INITDB_ROOT_USERNAME = var.mongodb_username
       MONGO_INITDB_ROOT_PASSWORD = var.mongodb_password
       MONGO_INITDB_DATABASE      = var.mongodb_database
       MONGODB_PORT               = "27017"
     }
-  }
 */
+  }
 
+/*
   container {
     name   = "nodejs"
     image  = "ghcr.io/software-dev-for-cloud-computing/node-app:latest"
@@ -202,9 +207,12 @@ resource "azurerm_container_group" "main_container" {
     port     = 8000
     protocol = "TCP"
   }
+  */
 }
 
+/*
 locals {
   mongodb_connection_string = azurerm_linux_web_app.mongodb_app.connection_string
   depends_on = [azurerm_linux_web_app.mongodb_app]
 }
+*/
