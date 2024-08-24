@@ -142,7 +142,7 @@ resource "azurerm_container_group" "main_container" {
 
     environment_variables = {
      # MONGODB_URI      = "${azurerm_linux_web_app.mongodb_app.connection_string}"
-      MONGODB_URI      = "mongodb://myuser:your_strong_password@mongodb-app-${random_pet.name.id}.azurewebsites.net:27017/dev4cloud"
+      MONGODB_URI      = local.mongodb_connection_string
       NODE_ENV         = "production"
       PORT             = "3000"
       CORS_ORIGIN      = "*"
