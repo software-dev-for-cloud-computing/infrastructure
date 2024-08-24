@@ -1,5 +1,5 @@
-mongodb_username     = "your_mongodb_username"
-mongodb_password = "your_mongodb_password"
+mongodb_username     = "username"
+mongodb_password = "password"
 mongodb_database     = "dev4cloud"
 
 

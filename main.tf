@@ -30,43 +30,6 @@ resource "azurerm_service_plan" "app_service_plan" {
   sku_name            = "B1"  // Oder einen anderen passenden SKU-Namen, der deine Anforderungen erfüllt
 }
 
-/*
-resource "azurerm_linux_web_app" "mongodb_app" {
-  name                = "mongodb-app-${random_pet.name.id}"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  service_plan_id     = azurerm_service_plan.app_service_plan.id
-
-  site_config {
-    always_on        = true
-
-    application_stack {
-      docker_image_name = "ghcr.io/software-dev-for-cloud-computing/mongo:latest"
-      docker_registry_url = "https://ghcr.io"
-    }
-  }
-
-  app_settings = {
-    WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
-    MONGO_INITDB_ROOT_USERNAME = var.mongodb_username
-    MONGO_INITDB_ROOT_PASSWORD = var.mongodb_password
-    MONGO_INITDB_DATABASE      = var.mongodb_database
-  }
-
-  logs {
-    application_logs {
-      file_system_level = "Verbose"
-    }
-    http_logs {
-      file_system {
-        retention_in_days = 7
-        retention_in_mb   = 35
-      }
-    }
-  }
-}
-*/
-
 resource "azurerm_container_group" "main_container" {
   name                = "rag-ss-dev4coud-${random_pet.name.id}"
   location            = azurerm_resource_group.main.location
@@ -132,29 +95,6 @@ resource "azurerm_container_group" "main_container" {
     }
   }
 
-
-  container {
-    name   = "nodejs"
-    image  = "ghcr.io/software-dev-for-cloud-computing/node-app:latest"
-    cpu    = "0.5"
-    memory = "1.5"
-
-    ports {
-      port     = 3000
-      protocol = "TCP"
-    }
-
-    environment_variables = {
-      # MONGODB_URI      = "${azurerm_linux_web_app.mongodb_app.connection_string}"
-      MONGODB_URI      = "mongodb://${var.mongodb_username}:${var.mongodb_password}@localhost:27017/${var.mongodb_database}" 
-      NODE_ENV         = "production"
-      PORT             = "3000"
-      CORS_ORIGIN      = "*"
-      AI_SERVICE_URL   = "http://rag-ss-dev4coud-hdm-stuttgart-2024.germanywestcentral.azurecontainer.io:8000/api/v1/qa"
-      DOCUMENT_API_URL = "http://rag-ss-dev4coud-hdm-stuttgart-2024.germanywestcentral.azurecontainer.io:8000/api/v1/document"
-    }
-  }
-
   container {
     name   = "react"
     image  = "ghcr.io/software-dev-for-cloud-computing/react-app:latest"
@@ -186,6 +126,30 @@ resource "azurerm_container_group" "main_container" {
       UVICORN_PORT = "8000"
     }
   }
+
+  container {
+    name   = "nodejs"
+    image  = "ghcr.io/software-dev-for-cloud-computing/node-app:latest"
+    cpu    = "0.5"
+    memory = "1.5"
+
+    ports {
+      port     = 3000
+      protocol = "TCP"
+    }
+
+    environment_variables = {
+      # MONGODB_URI      = "${azurerm_linux_web_app.mongodb_app.connection_string}"
+      MONGODB_URI      = "mongodb://${var.mongodb_username}:${var.mongodb_password}@localhost:27017/${var.mongodb_database}" 
+      NODE_ENV         = "production"
+      PORT             = "3000"
+      CORS_ORIGIN      = "*"
+      AI_SERVICE_URL   = "http://rag-ss-dev4coud-hdm-stuttgart-2024.germanywestcentral.azurecontainer.io:8000/api/v1/qa"
+      DOCUMENT_API_URL = "http://rag-ss-dev4coud-hdm-stuttgart-2024.germanywestcentral.azurecontainer.io:8000/api/v1/document"
+    }
+
+  }
+
 
   exposed_port {
     port     = 80

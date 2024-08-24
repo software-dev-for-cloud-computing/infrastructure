@@ -3,9 +3,9 @@ variable "mongodb_database" {
 }
 
 variable "mongodb_username" {
-  default = "myuser"
+  default = "user"
 }
 
 variable "mongodb_password" {
-  default = "your_strong_password"
+  default = "password"
 }
