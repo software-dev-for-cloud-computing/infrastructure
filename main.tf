@@ -1,4 +1,3 @@
-
 terraform {
   required_providers {
     azurerm = {
@@ -40,22 +39,6 @@ resource "azurerm_container_group" "main_container" {
       protocol = "TCP"
     }
 
-    /*environment_variables = {
-      QDRANT_PORT                = "6333"
-      VECTOR_STORE_COLLECTION    = "CoStudy"
-      VECTOR_STORE_DIMENSION     = "1536"
-      LLM_MODEL                  = "gpt-4o-mini"
-      LLM_DEFAULT_TEMP           = "0.0"
-      LLM_MIN_TEMP               = "0.0"
-      LLM_MAX_TEMP               = "1.0"
-      EMBEDDING_MODEL            = "text-embedding-3-small"
-      LLM_DEFAULT_TOKEN_LIMIT    = "200"
-      LLM_MIN_TOKEN_LIMIT        = "1"
-      LLM_MAX_TOKEN_LIMIT        = "1024"
-      MIN_LENGTH_CONTEXT_MESSAGE = "1"
-      MAX_LENGTH_CONTEXT_MESSAGE = "10240"
-      MAX_K_RESULTS              = "5"
-    }*/
   }
 
   container {
