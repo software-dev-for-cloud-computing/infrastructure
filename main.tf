@@ -125,8 +125,10 @@ resource "azurerm_container_group" "main_container" {
       NODE_ENV         = "production"
       PORT             = "3000"
       CORS_ORIGIN      = "*"
-      AI_SERVICE_URL   = "http://rag-ss-dev4coud-hdm-stuttgart-2024.germanywestcentral.azurecontainer.io:8000/api/v1/qa"
-      DOCUMENT_API_URL = "http://rag-ss-dev4coud-hdm-stuttgart-2024.germanywestcentral.azurecontainer.io:8000/api/v1/document"
+      #AI_SERVICE_URL   = "http://rag-ss-dev4coud-hdm-stuttgart-2024.germanywestcentral.azurecontainer.io:8000/api/v1/qa"
+      # DOCUMENT_API_URL = "http://rag-ss-dev4coud-hdm-stuttgart-2024.germanywestcentral.azurecontainer.io:8000/api/v1/document"
+      AI_SERVICE_URL   = "http://localhost:8000/api/v1/qa"
+      DOCUMENT_API_URL = "http://localhost:8000/api/v1/document"
     }
 
   }
