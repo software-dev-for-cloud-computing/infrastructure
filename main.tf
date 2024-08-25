@@ -89,7 +89,7 @@ resource "azurerm_container_group" "main_container" {
     }
 
     environment_variables = {
-      REACT_APP_API_URL = "http://rag-ss-dev4coud-hdm-stuttgart-2024.germanywestcentral.azurecontainer.io:9999"
+      REACT_APP_API_URL = "http://rag-ss-dev4coud-hdm-stuttgart-2024.germanywestcentral.azurecontainer.io:3000"
     }
   }
 
