@@ -142,19 +142,19 @@ resource "azurerm_container_group" "main_container" {
     protocol = "TCP"
   }
 
-  exposed_port {
+  /*exposed_port {
     port     = 6333
     protocol = "TCP"
-  }
+  }*/
 
   exposed_port {
     port     = 8000
     protocol = "TCP"
   }
 
-  exposed_port {
+  /*exposed_port {
     port     = 27017
     protocol = "TCP"
-  }
+  }*/
 
 }
