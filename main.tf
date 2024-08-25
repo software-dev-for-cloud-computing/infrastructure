@@ -21,15 +21,6 @@ resource "azurerm_resource_group" "main" {
   name     = "myResourceGroup-${random_pet.name.id}"
   location = "Germany West Central"
 }
-
-resource "azurerm_service_plan" "app_service_plan" {
-  name                = "my-app-service-plan"  // Wähle einen passenden Namen
-  resource_group_name = azurerm_resource_group.main.name
-  location            = azurerm_resource_group.main.location
-  os_type             = "Linux"
-  sku_name            = "B1"  // Oder einen anderen passenden SKU-Namen, der deine Anforderungen erfüllt
-}
-
 resource "azurerm_container_group" "main_container" {
   name                = "rag-ss-dev4coud-${random_pet.name.id}"
   location            = azurerm_resource_group.main.location
@@ -38,12 +29,6 @@ resource "azurerm_container_group" "main_container" {
   ip_address_type     = "Public"
   dns_name_label      = "rag-ss-dev4coud-hdm-stuttgart-2024"
 
-  /*depends_on = [
-    azurerm_linux_web_app.mongodb_app,
-  ]*/
-
-
-  
   container {
     name   = "qdrant"
     image  = "ghcr.io/software-dev-for-cloud-computing/qdrant:latest"
@@ -72,8 +57,6 @@ resource "azurerm_container_group" "main_container" {
       MAX_K_RESULTS              = "5"
     }
   }
-  
-
 
   container {
     name   = "mongodb"
@@ -88,11 +71,9 @@ resource "azurerm_container_group" "main_container" {
 
 
     environment_variables = {
-      #MONGO_INITDB_ROOT_USERNAME = "user"
-      #MONGO_INITDB_ROOT_PASSWORD = "password"
       MONGO_INITDB_DATABASE      = "dev4cloud"
       MONGODB_PORT               = "27017"
-      DISABLE_MONGO_AUTH         = "true" # Dies deaktiviert die Authentifizierung
+      DISABLE_MONGO_AUTH         = "true"
     }
   }
 
@@ -140,8 +121,7 @@ resource "azurerm_container_group" "main_container" {
     }
 
     environment_variables = {
-      # MONGODB_URI      = "${azurerm_linux_web_app.mongodb_app.connection_string}"
-      MONGODB_URI      = "mongodb://localhost:27017/dev4cloud" 
+      MONGODB_URI      = "mongodb://localhost:27017/dev4cloud"
       NODE_ENV         = "production"
       PORT             = "3000"
       CORS_ORIGIN      = "*"
@@ -162,7 +142,7 @@ resource "azurerm_container_group" "main_container" {
     protocol = "TCP"
   }
 
-  exposed_port {
+  /*exposed_port {
     port     = 6333
     protocol = "TCP"
   }
@@ -175,6 +155,6 @@ resource "azurerm_container_group" "main_container" {
   exposed_port {
     port     = 27017
     protocol = "TCP"
-  }
+  }*/
 
 }
