@@ -89,7 +89,7 @@ resource "azurerm_container_group" "main_container" {
     }
 
     environment_variables = {
-      REACT_APP_API_URL = "http://rag-ss-dev4coud-hdm-stuttgart-2024.germanywestcentral.azurecontainer.io:3000"
+      REACT_APP_API_URL = "http://rag-ss-dev4coud-hdm-stuttgart-2024.germanywestcentral.azurecontainer.io:9999"
     }
   }
 
@@ -131,7 +131,6 @@ resource "azurerm_container_group" "main_container" {
 
   }
 
-
   exposed_port {
     port     = 80
     protocol = "TCP"
@@ -142,19 +141,8 @@ resource "azurerm_container_group" "main_container" {
     protocol = "TCP"
   }
 
-  /*exposed_port {
-    port     = 6333
-    protocol = "TCP"
-  }*/
-
   exposed_port {
     port     = 8000
     protocol = "TCP"
   }
-
-  /*exposed_port {
-    port     = 27017
-    protocol = "TCP"
-  }*/
-
 }
