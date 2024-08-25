@@ -40,7 +40,7 @@ resource "azurerm_container_group" "main_container" {
       protocol = "TCP"
     }
 
-    environment_variables = {
+    /*environment_variables = {
       QDRANT_PORT                = "6333"
       VECTOR_STORE_COLLECTION    = "CoStudy"
       VECTOR_STORE_DIMENSION     = "1536"
@@ -55,7 +55,7 @@ resource "azurerm_container_group" "main_container" {
       MIN_LENGTH_CONTEXT_MESSAGE = "1"
       MAX_LENGTH_CONTEXT_MESSAGE = "10240"
       MAX_K_RESULTS              = "5"
-    }
+    }*/
   }
 
   container {
@@ -149,7 +149,6 @@ resource "azurerm_container_group" "main_container" {
       MONGODB_URI      = "mongodb://localhost:27017/dev4cloud"
       NODE_ENV         = "production"
       PORT             = "3000"
-      CORS_ORIGIN      = "*"
       AI_SERVICE_URL   = "http://rag-ss-dev4coud-hdm-stuttgart-2024.germanywestcentral.azurecontainer.io:8000/api/v1/qa"
       DOCUMENT_API_URL = "http://rag-ss-dev4coud-hdm-stuttgart-2024.germanywestcentral.azurecontainer.io:8000/api/v1/document"
     }
